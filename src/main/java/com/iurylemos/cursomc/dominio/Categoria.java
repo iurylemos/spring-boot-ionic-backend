@@ -2,6 +2,13 @@ package com.iurylemos.cursomc.dominio;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
+//Persistence sempre pois é do JPA
+@Entity
 public class Categoria implements Serializable {
 	
 	/**
@@ -13,6 +20,10 @@ public class Categoria implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
+	//Geração automatica do ID com o GeneratedValue
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
 	
