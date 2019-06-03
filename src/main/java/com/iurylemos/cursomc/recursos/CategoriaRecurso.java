@@ -43,12 +43,14 @@ public class CategoriaRecurso {
 	 *  e coloquei o ResponseEntity
 	 *  que já encapsula, amarzena varias informações
 	 *  de uma resposta HTTP para um serviço REST
+	 *  
+	 *  Tenho que utilizar o Handler para lançar excessão
+	 *  não fica legal eu utilizar o trycatch.
 	 */
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	public ResponseEntity<?> find(@PathVariable Integer id) {
 		
 		Categoria obj = servico.buscar(id);
-		
 		return ResponseEntity.ok().body(obj);
 	}
 }
