@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.iurylemos.cursomc.dominio.Categoria;
+import com.iurylemos.cursomc.dominio.Cidade;
+import com.iurylemos.cursomc.dominio.Estado;
 import com.iurylemos.cursomc.dominio.Produto;
 import com.iurylemos.cursomc.repositorios.CategoriaRepositorio;
+import com.iurylemos.cursomc.repositorios.CidadeRepositorio;
+import com.iurylemos.cursomc.repositorios.EstadoRepositorio;
 import com.iurylemos.cursomc.repositorios.ProdutoRepositorio;
 
 @SpringBootApplication
@@ -21,6 +25,12 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	@Autowired
 	ProdutoRepositorio produtoRepositorio;
+	
+	@Autowired
+	EstadoRepositorio estadoRepositorio;
+	
+	@Autowired
+	CidadeRepositorio cidadeRepositorio;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -59,11 +69,33 @@ public class CursomcApplication implements CommandLineRunner {
 		p1.getCategorias().addAll(Arrays.asList(cat1));
 		p2.getCategorias().addAll(Arrays.asList(cat1, cat2));
 		p3.getCategorias().addAll(Arrays.asList(cat1));
-		
+	
 		
 		//salvar
 		categoriaRepositorio.save(Arrays.asList(cat1, cat2));
 		produtoRepositorio.save(Arrays.asList(p1, p2, p3));
+		
+		/**
+		 * Separando =================
+		 */
+		
+		//Estado
+		Estado est1 = new Estado(null, "Minas Gerais");
+		Estado est2 = new Estado(null, "São Paulo");
+		
+		//Cidades
+		Cidade c1 = new Cidade(null,"Uberlândia", est1);
+		Cidade c2 = new Cidade(null,"São Paulo", est2);
+		//No MUITOS para UM, no próprio contrutor a gente já faz a instaciação.
+		Cidade c3 = new Cidade(null, "Campinas", est2);
+		
+		//Estado conhecendo a cidade.
+		est1.getCidades().addAll(Arrays.asList(c1));
+		est2.getCidades().addAll(Arrays.asList(c2,c3));
+		
+		//Temos que salvar os estados já relacionando depois com os estados
+		estadoRepositorio.save(Arrays.asList(est1, est2));
+		cidadeRepositorio.save(Arrays.asList(c1, c2, c3));
 	}
 
 }
