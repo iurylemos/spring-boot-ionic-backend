@@ -14,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 
 @Entity
@@ -48,7 +49,12 @@ public class Cliente implements Serializable {
 	//O vários endereço do lado Endereco já está mapeado o cliente
 	//Então aqui basta eu utilizar o OneToMany e dizer onde está
 	//Mapeado lá do outro lado que é campo de nome cliente.
+	//O cliente pode serializar os endereço dele
+	//Porem o endereço não pode serializar o cliente dele
+	//Vou colocar o JsonManagerReference aqui
+	//E na classe Endereço já boto a anotação que não pode
 	
+	@JsonManagedReference
 	@OneToMany(mappedBy="cliente")
 	private List<Endereco> enderecos = new ArrayList<>();
 
