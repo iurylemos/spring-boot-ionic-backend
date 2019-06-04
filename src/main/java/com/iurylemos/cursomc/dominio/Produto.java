@@ -2,7 +2,9 @@ package com.iurylemos.cursomc.dominio;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -59,6 +62,19 @@ public class Produto implements Serializable {
 		inverseJoinColumns = @JoinColumn(name = "categoria_id")
 	)
 	private List<Categoria> categorias = new ArrayList<>();
+	
+	//Conhecer os item de pedidos associados a ela.
+		//O pedido tem vários itens.
+		//Foi mapeado pelo id.pedido
+		//Porque?
+		/*
+		 * Do outro lado eu tenho o ItemPedidoPK que tem o objeto id
+		 * que eu instanciei e esse id é um objeto auxiliar
+		 * que vai ter a referencia para o pedido que tem dentro
+		 * da classe ItemPedidoPK
+		 */
+	@OneToMany(mappedBy="id.produto")
+	private Set<ItemPedido> itens = new HashSet<>();
 
 	public Produto() {
 		
@@ -68,6 +84,32 @@ public class Produto implements Serializable {
 		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
+	}
+	
+	/*
+	 * Um produto ele conhece os pedidos dele
+	 * Então vou criar um metodo getPedidos
+	 * varrendo os itens de pedido e montando
+	 * uma lista de pedidos associados a esses itens.
+	 * 
+	 * 
+	 * o nome do metodo tem que ser getPedidos
+	 * para obedecer o padrão do JavaBeans.
+	 * que é uma exigência da plataforma java.
+	 * tem que começar o nome com get e depois colocar o nome
+	 * que você quer do DADO.
+	 */
+	
+	public List<Pedido> getPedidos() {
+		//Iniciando uma lista de Pedido
+		List<Pedido> lista = new ArrayList<>();
+		//Agora vou pecorrer todos os ItemPedido
+		//E para cada itemdePedido x que existir na lista itens
+		//vou adicionar o pedido associado a ele na minha lista.
+		for(ItemPedido x : itens) {
+			lista.add(x.getPedido());
+		}
+		return lista;
 	}
 
 	public Integer getId() {
@@ -100,6 +142,14 @@ public class Produto implements Serializable {
 
 	public void setCategoria(List<Categoria> categorias) {
 		this.categorias = categorias;
+	}
+
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 
 	/*

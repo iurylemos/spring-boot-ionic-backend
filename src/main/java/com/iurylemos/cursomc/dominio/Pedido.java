@@ -2,6 +2,8 @@ package com.iurylemos.cursomc.dominio;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -55,6 +58,21 @@ public class Pedido implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="endereco_de_entrega_id")
 	private Endereco enderecoDeEntrega;
+	
+	//Conhecer os item de pedidos associados a ela.
+	//O pedido tem vários itens.
+	//Foi mapeado pelo id.pedido
+	//Porque?
+	/*
+	 * Do outro lado eu tenho o ItemPedidoPK que tem o objeto id
+	 * que eu instanciei e esse id é um objeto auxiliar
+	 * que vai ter a referencia para o pedido que tem dentro
+	 * da classe ItemPedidoPK
+	 */
+	@OneToMany(mappedBy="id.pedido")
+	private Set<ItemPedido> itens = new HashSet<>();
+	
+	
 	
 	public Pedido() {
 		
@@ -106,6 +124,14 @@ public class Pedido implements Serializable {
 
 	public void setEnderecoDeEntrega(Endereco enderecoDeEntrega) {
 		this.enderecoDeEntrega = enderecoDeEntrega;
+	}
+
+	public Set<ItemPedido> getItens() {
+		return itens;
+	}
+
+	public void setItens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 
 	@Override
