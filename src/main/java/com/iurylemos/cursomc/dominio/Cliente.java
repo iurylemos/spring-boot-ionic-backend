@@ -76,6 +76,8 @@ public class Cliente implements Serializable {
 	private Set<String> telefones = new HashSet<>();
 	
 	//Cliente conhece o pedido.
+	//mappedBy foi mapeado pelo cliente que tem lá do outro lado
+	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 	
 	

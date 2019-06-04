@@ -1,7 +1,10 @@
 package com.iurylemos.cursomc.dominio;
 
+import javax.persistence.Entity;
+
 import com.iurylemos.cursomc.dominio.enums.EstadoPagamento;
 
+@Entity
 public class PagamentoComCartao extends Pagamento {
 	
 	private static final long serialVersionUID = 1L;
