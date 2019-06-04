@@ -9,10 +9,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.iurylemos.cursomc.dominio.Categoria;
 import com.iurylemos.cursomc.dominio.Cidade;
+import com.iurylemos.cursomc.dominio.Cliente;
+import com.iurylemos.cursomc.dominio.Endereco;
 import com.iurylemos.cursomc.dominio.Estado;
 import com.iurylemos.cursomc.dominio.Produto;
+import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 import com.iurylemos.cursomc.repositorios.CategoriaRepositorio;
 import com.iurylemos.cursomc.repositorios.CidadeRepositorio;
+import com.iurylemos.cursomc.repositorios.ClienteRepositorio;
+import com.iurylemos.cursomc.repositorios.EnderecoRepositorio;
 import com.iurylemos.cursomc.repositorios.EstadoRepositorio;
 import com.iurylemos.cursomc.repositorios.ProdutoRepositorio;
 
@@ -21,16 +26,22 @@ public class CursomcApplication implements CommandLineRunner {
 	
 	//Depedência
 	@Autowired
-	CategoriaRepositorio categoriaRepositorio;
+	private CategoriaRepositorio categoriaRepositorio;
 	
 	@Autowired
-	ProdutoRepositorio produtoRepositorio;
+	private ProdutoRepositorio produtoRepositorio;
 	
 	@Autowired
-	EstadoRepositorio estadoRepositorio;
+	private EstadoRepositorio estadoRepositorio;
 	
 	@Autowired
-	CidadeRepositorio cidadeRepositorio;
+	private CidadeRepositorio cidadeRepositorio;
+	
+	@Autowired
+	private ClienteRepositorio clienteRepositorio;
+	
+	@Autowired
+	private EnderecoRepositorio enderecoRepositorio;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -96,6 +107,30 @@ public class CursomcApplication implements CommandLineRunner {
 		//Temos que salvar os estados já relacionando depois com os estados
 		estadoRepositorio.save(Arrays.asList(est1, est2));
 		cidadeRepositorio.save(Arrays.asList(c1, c2, c3));
+		
+		/**
+		 * Instaciação dos outros objetos criados, Cliente,Endereco
+		 * 
+		 * Ordem das depedências.
+		 * Endereco Depende do Cliente e da Cidade então é o ULTIMO
+		 * Cliente tem endereco e tem telefone então é o PRIMEIRO
+		 */
+		
+		//Instaciação.
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("32307858", "988572721"));
+		
+		Endereco e1 = new Endereco(null, "Rua Flores", "300" , "Apto 303", "Bom Jardim", "60383282", cli1 , c1);
+		Endereco e2 = new Endereco(null, "Avenidade Matos", "105" , "Sala 800", "Centro", "60353322", cli1 , c2);
+		
+		//Associar o cliente a conhecer os endereco.
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		
+		//Salvando no banco com os repositórios.
+		//Salvo primeiro quem é independente que é o cliente.
+		//E depois salvo os enderecos.
+		clienteRepositorio.save(Arrays.asList(cli1));
+		enderecoRepositorio.save(Arrays.asList(e1, e2));
 	}
 
 }
