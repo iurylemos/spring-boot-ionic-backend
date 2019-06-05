@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -128,6 +130,37 @@ public class CategoriaRecurso {
 		//E depois converter para lista de novo com o collect.
 		
 		List<CategoriaDTO> listDto = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(listDto);
+	}
+	
+	//Metodo para me retornar a paginação.
+	//Vou acrescentar o /page para ele retornar todas as paginas.
+	//Eu não vou fazer eles como variaveis do Path
+	//EX: categorias/page/0/200...
+	//Vou fazer como parametro
+	//Vai ser assim:
+	//categorias/page?page=0linesPorPage=20..
+	//coloquei o defaultValue 0 no page, pois se o usuário não escolher ele vai para a 0
+	//que é a HOME.
+	//já do linesPorPage vou colocar 24
+	//Pois o 24 é multiplo de 1,2,3 então fica fácil de organizar o layout de forma
+	//responsiva conforme for o tamanho da sua tela.. TIPO de 1 em 1, 2 em 2, 3 em 3..
+	
+	//valor padrão do orderby se não for informado, vai ser por nome.
+	
+	@RequestMapping(value="/page", method=RequestMethod.GET)
+	public ResponseEntity<Page<CategoriaDTO>> findPage(
+			@RequestParam(value="page", defaultValue="0") Integer page,
+			@RequestParam(value="linesPorPage", defaultValue="24") Integer linesPorPage, 
+			@RequestParam(value="orderBy", defaultValue="nome" ) String orderBy, 
+			@RequestParam(value="direcao", defaultValue="ASC" ) String direcao) {
+		Page<Categoria> list = servico.findPage(page, linesPorPage, orderBy, direcao);
+		/*
+		 * Como o PAGE ele é JAVA 8 compliance, ele não vai precisar nem do STREAM
+		 * E nem converter para lista novamente.
+		 */
+		Page<CategoriaDTO> listDto = list.map(obj -> new CategoriaDTO(obj));
 		
 		return ResponseEntity.ok().body(listDto);
 	}

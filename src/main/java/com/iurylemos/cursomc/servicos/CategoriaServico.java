@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.iurylemos.cursomc.dominio.Categoria;
@@ -78,5 +81,26 @@ public class CategoriaServico {
 	public List<Categoria> findAll() {
 		return repo.findAll();
 	}
-
+	
+	//Função para me retornar somente as categorias que eu quiser.
+	//Paginação.
+	//Vou utilizar uma classe chamada Page
+	//Encapsula informações e operações sobre a paginação.
+	//Dentro do parametro vou informar a pagina que eu quero
+	//Entou coloco o Integer page.
+	//E a outra informação vai ser a linhas por pagina eu quero.
+	//E a outra vai ser por qual atributo eu quero ordernar.
+	//O outro vai ser em qual direção eu quero ordenar
+	//Se é descedente ou ascendente
+	public Page<Categoria> findPage(Integer page, Integer linesPorPage, String orderBy, String direcao){
+		//Para uma consulta para retornar uma pagina de dados
+		//Tenho que criar um outro objeto do tipo PageRequest do Spring data
+		//Ele vai ser um objeto que vai preparar aqui para minhas informações
+		//Para que eu faça a consulta que me retorna a minha pagina de dados.
+		//O utlimo que é properties é por onde eu quero ordenar.
+		PageRequest pageRequest = new PageRequest(page, linesPorPage, Direction.valueOf(direcao), orderBy);
+		return repo.findAll(pageRequest);
+	}
+		
 }
+
