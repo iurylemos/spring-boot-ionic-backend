@@ -35,6 +35,10 @@ public class ItemPedido implements Serializable {
 	 * @EmbeddedId
 	 * Ou seja ele é um ID embutido em um tipo auxiliar.
 	 */
+	//JsonIgnore = NEM OLHA PARA ESSE CARA AQUI 
+		//A partir do ItemPedido ele não serializa nem o Pedido nem o Produto
+		//Só vou permitir que o pedido serialize os itens dele.
+	@JsonIgnore
 	@EmbeddedId
 	private ItemPedidoPK id = new ItemPedidoPK();
 	

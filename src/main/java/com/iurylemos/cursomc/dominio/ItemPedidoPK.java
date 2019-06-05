@@ -6,8 +6,6 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Embeddable
 public class ItemPedidoPK implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -17,11 +15,8 @@ public class ItemPedidoPK implements Serializable {
 	//Por que o ItemPedido ele tem que conhcer o pedido o produto
 	//Um pedido e um produto muitos para um.
 	//JoinColumn chave estrangeira vai se chamar pedido_id
-	//JsonIgnore = NEM OLHA PARA ESSE CARA AQUI 
-	//A partir do ItemPedido ele não serializa nem o Pedido nem o Produto
-	//Só vou permitir que o pedido serialize os itens dele.
 	
-	@JsonIgnore
+	
 	@ManyToOne
 	@JoinColumn(name="pedido_id")
 	private Pedido pedido;

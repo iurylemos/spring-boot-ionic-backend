@@ -15,7 +15,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
@@ -56,7 +55,9 @@ public class Produto implements Serializable {
 	 */
 	//Esse json back reference fiz tbm na lista de categoria
 	//Ou seja do outro lado da ação já foram buscado os objetos
-	@JsonBackReference
+	//@JsonBackReference
+	
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(name = "PRODUTO_CATEGORIA",
 		joinColumns = @JoinColumn(name = "produto_id"),

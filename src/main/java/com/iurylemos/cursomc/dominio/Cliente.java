@@ -14,8 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 
 @Entity
@@ -55,7 +54,8 @@ public class Cliente implements Serializable {
 	//Vou colocar o JsonManagerReference aqui
 	//E na classe Endereço já boto a anotação que não pode
 	
-	@JsonManagedReference
+	//@JsonManagedReference
+	//Na ultima atualizado foi retirado o JsonManagedReference.
 	@OneToMany(mappedBy="cliente")
 	private List<Endereco> enderecos = new ArrayList<>();
 
@@ -80,7 +80,9 @@ public class Cliente implements Serializable {
 	//mappedBy foi mapeado pelo cliente que tem lá do outro lado
 	//Não vou permitir que o cliente serialize os pedidos
 	//Só o pedido serialize quem é o cliente.
-	@JsonBackReference
+	//@JsonBackReference
+	//Onde tiver o JsonBackReference eu troco pelo @JsonIgnore
+	@JsonIgnore
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 	
