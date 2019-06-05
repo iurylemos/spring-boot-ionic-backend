@@ -31,5 +31,15 @@ public class CategoriaServico {
 		return obj;
 	}
 	
+	//Metodo para inserir
+	
+	public Categoria insert(Categoria obj) {
+		//Progamação defensiva
+		//Garantir que realmente estou inserindo um objeto novo.
+		//Ou seja o objeto a ser inserido ele tem que ser nulo.
+		obj.setId(null);
+		return repo.save(obj);
+	}
+	
 
 }
