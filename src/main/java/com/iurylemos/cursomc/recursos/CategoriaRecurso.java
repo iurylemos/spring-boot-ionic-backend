@@ -52,9 +52,9 @@ public class CategoriaRecurso {
 	 *  não fica legal eu utilizar o trycatch.
 	 */
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
-	public ResponseEntity<?> find(@PathVariable Integer id) {
-		
-		Categoria obj = servico.buscar(id);
+	public ResponseEntity<Categoria> find(@PathVariable Integer id) {
+		//Botei categoria no lugar de ?, por que ou retorna categoria ou Excesao.
+		Categoria obj = servico.find(id);
 		return ResponseEntity.ok().body(obj);
 	}
 	
@@ -89,5 +89,17 @@ public class CategoriaRecurso {
 		//e o build para gerar a resposta bonita para mim.
 		
 		return ResponseEntity.created(uri).build();
+	}
+	
+	//Metodo para atualização.
+	//Esse metodo vai ter o id pois é apartir desse id que eu atualizo o campo.
+	//Vai ser uma mistura do GET com o POST.
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+		//Garantir que a categoria que vai ser atualizada é a que eu passar o código na URL
+		obj.setId(id);
+		obj = servico.update(obj);
+		//conteudo vázio = noContent.
+		return ResponseEntity.noContent().build();
 	}
 }

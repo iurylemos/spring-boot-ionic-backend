@@ -17,7 +17,7 @@ public class PedidoServico {
 	@Autowired
 	private PedidoRepositorio repo;
 	
-	public Pedido buscar(Integer id) {
+	public Pedido find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
 		//findOne, se o Id existe, ele retorna, se não é nulo.

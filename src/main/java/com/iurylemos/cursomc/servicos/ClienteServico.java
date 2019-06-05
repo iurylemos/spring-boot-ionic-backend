@@ -17,7 +17,7 @@ public class ClienteServico {
 	@Autowired
 	private ClienteRepositorio repo;
 	
-	public Cliente buscar(Integer id) {
+	public Cliente find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
 		//findOne, se o Id existe, ele retorna, se não é nulo.

@@ -17,7 +17,7 @@ public class CategoriaServico {
 	@Autowired
 	private CategoriaRepositorio repo;
 	
-	public Categoria buscar(Integer id) {
+	public Categoria find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
 		//findOne, se o Id existe, ele retorna, se não é nulo.
@@ -41,5 +41,14 @@ public class CategoriaServico {
 		return repo.save(obj);
 	}
 	
+	//Metodo para atualização.
+	
+	public Categoria update(Categoria obj) {
+		//Diferença do insert para cá
+		//É justamente a programação defensiva o insert só vai inserir quando o id é nulo.
+		//Verificar se o id existe, utilizando o buscar.
+		find(obj.getId());
+		return repo.save(obj);
+	}
 
 }
