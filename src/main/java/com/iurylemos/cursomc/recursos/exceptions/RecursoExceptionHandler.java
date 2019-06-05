@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
 @ControllerAdvice
@@ -34,5 +35,23 @@ public class RecursoExceptionHandler {
 		
 		ErroPadrao erro = new ErroPadrao(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+	}
+	
+	@ExceptionHandler(DataIntegrityException.class)
+	public ResponseEntity<ErroPadrao> dataintegrity(DataIntegrityException e, HttpServletRequest request) {
+		/*
+		 * Isso aqui é uma classe auxiliar que vai interceptar
+		 * as excessoes e ela obrigatoriamente dentro do framework
+		 * tem que ter essa excessao
+		 * No 1º parametro vai receber as excessoes que estourou.
+		 * No 2º parametro as informações das requisições.
+		 */
+		//Isso é padrão do controllerAdvace
+		//No lugar do NOT_FOUND vai ser o BAD_REQUEST
+		
+		//Se estourar a excessão vai aparecer o meu StandardError.
+		
+		ErroPadrao erro = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 }

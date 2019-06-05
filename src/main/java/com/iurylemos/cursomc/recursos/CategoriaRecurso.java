@@ -102,4 +102,11 @@ public class CategoriaRecurso {
 		//conteudo vázio = noContent.
 		return ResponseEntity.noContent().build();
 	}
+	
+	//Metodo deletar.
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> delete(@PathVariable Integer id) {
+		servico.delete(id);
+		return ResponseEntity.noContent().build();
+	}
 }

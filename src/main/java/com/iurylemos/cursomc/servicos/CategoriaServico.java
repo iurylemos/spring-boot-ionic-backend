@@ -1,10 +1,12 @@
 package com.iurylemos.cursomc.servicos;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.iurylemos.cursomc.dominio.Categoria;
 import com.iurylemos.cursomc.repositorios.CategoriaRepositorio;
+import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
 @Service
@@ -49,6 +51,25 @@ public class CategoriaServico {
 		//Verificar se o id existe, utilizando o buscar.
 		find(obj.getId());
 		return repo.save(obj);
+	}
+	
+	//Metodo delete.
+	public void delete(Integer id) {
+		//Verificar se o id existe
+		find(id);
+		//Colocar um tratamento aqui para caso queira apagar uma tabela integra.
+		//Ou seja que possui produtos.
+		try {
+			repo.delete(id);
+		}catch(DataIntegrityViolationException e) {
+			//Lançar uma excessão personalizada minha
+			//Ou seja criar uma classe para tratar esse erro.
+			//Só clonei a ObjetoNotFound..
+			throw new DataIntegrityException("Não é possivel excluir uma categoria que possui produtos");
+			//Para receber isso lá na categoriaRecurso
+			//Preciso modificar apenas na RecursoExceptionHandler.
+			
+		}
 	}
 
 }
