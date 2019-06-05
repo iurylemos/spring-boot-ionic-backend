@@ -5,6 +5,8 @@ import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class ItemPedido implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -70,11 +72,18 @@ public class ItemPedido implements Serializable {
 	//Que seja acesso primeiro o ID e depois dentro desse id
 	//eu ter que acessar o produto ou pedido.
 	//É melhor eu ter aqui direta para melhorar semântica da minha classe.
+	//Eles dois estão fazendo a referência ciclica
+	//Pois tudo que começa com GET ele serializa.
+	//Vou ignorar todos dois quando for fazer a serialização
+	//com o JsonIgnore
 	 
+	@JsonIgnore
 	public Pedido getPedido() {
 		return id.getPedido();
 	}
 	
+	// @JsonIgnore
+	//Retirei pois quero que quando eu puxe no Postman, venha associado com os ITEN
 	public Produto getProduto() {
 		return id.getProduto();
 	}

@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -72,7 +73,13 @@ public class Produto implements Serializable {
 		 * que eu instanciei e esse id é um objeto auxiliar
 		 * que vai ter a referencia para o pedido que tem dentro
 		 * da classe ItemPedidoPK
+		 * 
+		 * O importante é que a partir do item de Pedido eu tenha
+		 * acesso ao Produto e não do Produto ter acesso ao Item 
+		 * de Pedido..
+		 * Por isso vou colocar o @jsonIgnore
 		 */
+	@JsonIgnore
 	@OneToMany(mappedBy="id.produto")
 	private Set<ItemPedido> itens = new HashSet<>();
 
@@ -99,7 +106,12 @@ public class Produto implements Serializable {
 	 * tem que começar o nome com get e depois colocar o nome
 	 * que você quer do DADO.
 	 */
+	//Ignorar tbm o getPedidos, pois a partir dos itens 
+	//Que eu quero os produtos e não vice versa.
+	//Se eu deixar sem ignorar, vai ser serializados os pedidos 
+	//associados aos produtos, e eu não quero isso.
 	
+	@JsonIgnore
 	public List<Pedido> getPedidos() {
 		//Iniciando uma lista de Pedido
 		List<Pedido> lista = new ArrayList<>();

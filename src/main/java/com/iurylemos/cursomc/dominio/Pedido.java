@@ -15,6 +15,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Pedido implements Serializable {
 	
@@ -30,6 +33,10 @@ public class Pedido implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	
+	//Para vim no formato de Data no JSON
+	//pattern = padrão.
+	@JsonFormat(pattern="dd/MM/yyyy HH:mm")
 	private Date instantePedido;
 	
 	//Associações
@@ -44,11 +51,21 @@ public class Pedido implements Serializable {
 	//1 para 1
 	//E ainda garantindo que o ID do pagamento
 	//Vai ser o mesmo Id do pedido correspondente a ELE.
+	//@JsonManagedReference = O PEDIDO PODE SERIALIZAR O PAGAMENTO
+	//@JsonBackReference = O PAGAMENTO NÃO PODE SERIALIZAR O PEDIDO
+	@JsonManagedReference
 	@OneToOne(cascade=CascadeType.ALL, mappedBy="pedido")
 	private Pagamento pagamento;
 	
 	//pedido tem um cliente
 	//Cliente conhece o pedido
+	/* eu vou permitir que seja serializado o cliente de um pedido
+	 * porem não permitir que seja serializado os pedidos de um cliente
+	 * 
+	 * isso quer dizer que na PEDIDO vou permitir o cliente ser serializado
+	 * e na cliente não vou permitir os pedidos serem serializados
+	 */
+	@JsonManagedReference
 	@ManyToOne
 	@JoinColumn(name="cliente_id")
 	private Cliente cliente;
