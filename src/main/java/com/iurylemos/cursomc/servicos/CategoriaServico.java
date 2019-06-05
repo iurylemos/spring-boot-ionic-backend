@@ -1,5 +1,7 @@
 package com.iurylemos.cursomc.servicos;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -70,6 +72,11 @@ public class CategoriaServico {
 			//Preciso modificar apenas na RecursoExceptionHandler.
 			
 		}
+	}
+	
+	//Metodo trazer a lista de todos itens da categoria.
+	public List<Categoria> findAll() {
+		return repo.findAll();
 	}
 
 }

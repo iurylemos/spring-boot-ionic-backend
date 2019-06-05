@@ -1,6 +1,8 @@
 package com.iurylemos.cursomc.recursos;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iurylemos.cursomc.dominio.Categoria;
+import com.iurylemos.cursomc.dto.CategoriaDTO;
 import com.iurylemos.cursomc.servicos.CategoriaServico;
 
 //Anotação para Rest
@@ -109,4 +112,24 @@ public class CategoriaRecurso {
 		servico.delete(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	//Metodo de mostrar todas categorias
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<List<CategoriaDTO>> findAll() {
+		List<Categoria> list = servico.findAll();
+		//Converter essa lista de categorias, para CategoriaDTO.
+		//A melhor forma é ir no DTO e criar um construtor que receba o objeto correspondete
+		//Lá das entidades de domínio.
+		//Utilizar o Strem para pecorrer a lista de categorias
+		//O map efetuar uma operação para cada elemento da lista
+		//Vou chamar ela de obj e para cada elemento da minha lista
+		// -> aeroFunction = FUNÇÃO anonima
+		//instaciar a minha categoriaDTO passando o obj como parametro
+		//E depois converter para lista de novo com o collect.
+		
+		List<CategoriaDTO> listDto = list.stream().map(obj -> new CategoriaDTO(obj)).collect(Collectors.toList());
+		
+		return ResponseEntity.ok().body(listDto);
+	}
+	
 }
