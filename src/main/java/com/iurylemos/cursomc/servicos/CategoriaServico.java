@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.iurylemos.cursomc.dominio.Categoria;
+import com.iurylemos.cursomc.dto.CategoriaDTO;
 import com.iurylemos.cursomc.repositorios.CategoriaRepositorio;
 import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
@@ -36,6 +37,12 @@ public class CategoriaServico {
 				+ ", Tipo: " +Categoria.class.getName());
 		}
 		return obj;
+	}
+	
+	//Metodo auxiliar.
+	//a partir de um objeto DTO, vou construir um objeto Categoria.
+	public Categoria fromDTO(CategoriaDTO objDto) {
+		return new Categoria(objDto.getId(), objDto.getNome());
 	}
 	
 	//Metodo para inserir

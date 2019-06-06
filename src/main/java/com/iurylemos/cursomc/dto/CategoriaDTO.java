@@ -2,6 +2,9 @@ package com.iurylemos.cursomc.dto;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.iurylemos.cursomc.dominio.Categoria;
 
 public class CategoriaDTO implements Serializable {
@@ -14,6 +17,13 @@ public class CategoriaDTO implements Serializable {
 	//Quero simplesmente a categoria. e é isso que essa classe faz.
 	
 	private Integer id;
+	
+	//Validação
+	//Caso o campo não tenha sido preenchido, vai dar a mensagem de preenchimento obrigatorio
+	//No length que é o tamanho o minimo é 5 e o maximo é 80 caracteres.
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Length(min=5, max=80, message="O tamanho deve ser entre 5 e 8 caracteres")
 	private String nome;
 	
 	public CategoriaDTO() {

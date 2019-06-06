@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -76,9 +78,15 @@ public class CategoriaRecurso {
 	//Isso faz com oque o JSON seja convertido para objeto JAVA automaticamente
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Categoria obj) {
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) {
 		//Esse metodo vai chamar um serviço que insere essa categoria no BD
 		//Coloquei obj recebendo pois na operação save ela me retorna um OBJETO.
+		//Modifiquei para DTO, e para validar aqui abaixo tenho que mudar no meu servico
+		//Para a validação do meu DTO ser valida preciso colocar a anotação Valid
+		//Botei para DTO pois fiz uma validação lá, com os nomes.
+		//Na classe de servico fiz um metodo que recebe uma categoriaDTO e retorna uma CATEGORIA
+		
+		Categoria obj = servico.fromDTO(objDto);
 		
 		obj = servico.insert(obj);
 		
@@ -100,8 +108,11 @@ public class CategoriaRecurso {
 	//Esse metodo vai ter o id pois é apartir desse id que eu atualizo o campo.
 	//Vai ser uma mistura do GET com o POST.
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Categoria obj, @PathVariable Integer id) {
+	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO objDto, @PathVariable Integer id) {
 		//Garantir que a categoria que vai ser atualizada é a que eu passar o código na URL
+		//Criei um metodo que transforma uma Categoria em CategoriaDTO
+		//Que contem as validação.
+		Categoria obj = servico.fromDTO(objDto);
 		obj.setId(id);
 		obj = servico.update(obj);
 		//conteudo vázio = noContent.
