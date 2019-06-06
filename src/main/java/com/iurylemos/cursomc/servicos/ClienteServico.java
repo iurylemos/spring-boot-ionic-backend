@@ -110,13 +110,15 @@ public class ClienteServico {
 		find(id);
 		//Colocar um tratamento aqui para caso queira apagar uma tabela integra.
 		//Ou seja que possui produtos.
+		//Quando um cliente possui produtos não pode apagar.
+		//Só se tiver endereço pois utilizei o cascata.
 		try {
 			repo.delete(id);
 		}catch(DataIntegrityViolationException e) {
 			//Lançar uma excessão personalizada minha
 			//Ou seja criar uma classe para tratar esse erro.
 			//Só clonei a ObjetoNotFound..
-			throw new DataIntegrityException("Não é possivel excluir um cliente há entidades relacionadas");
+			throw new DataIntegrityException("Não é possivel excluir um cliente há pedidos relacionadas");
 			//Para receber isso lá na categoriaRecurso
 			//Preciso modificar apenas na RecursoExceptionHandler.
 			

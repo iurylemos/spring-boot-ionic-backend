@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -56,7 +57,15 @@ public class Cliente implements Serializable {
 	
 	//@JsonManagedReference
 	//Na ultima atualizado foi retirado o JsonManagedReference.
-	@OneToMany(mappedBy="cliente")
+	//Utilizando cascante para quando eu quiser apagar um cliente eu apague o endereco
+	//Que são alinhados junto com eles
+	//Pelo cascade e CascadeType, eu defino qual vai ser o comportado dessa ação.
+	//Vou escolher ALL, ou seja toda operação que modificar o cliente
+	//Vou poder refletir em cascata lá nos endereços
+	//Ex: se eu for apagar o cliente então, vou apagar os endereços dele tbm automaticamente
+	//Conclusão que quando tiver uma regra de negócio que você pode apagar em cascata
+	//É só colocar isso aqui que o JPA já faz a regra no BD
+	@OneToMany(mappedBy="cliente", cascade=CascadeType.ALL)
 	private List<Endereco> enderecos = new ArrayList<>();
 
 	/*
