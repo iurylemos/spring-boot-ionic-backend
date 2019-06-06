@@ -9,11 +9,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.iurylemos.cursomc.dominio.Categoria;
 import com.iurylemos.cursomc.dominio.Cliente;
-import com.iurylemos.cursomc.dto.CategoriaDTO;
 import com.iurylemos.cursomc.dto.ClienteDTO;
-import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.repositorios.ClienteRepositorio;
 import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
@@ -60,7 +57,10 @@ public class ClienteServico {
 	//Metodo para atualização.
 	
 	public Cliente update(Cliente obj) {
-		//Instanciar um cliente a partir do BancoDeDados.
+		//Instanciar um cliente a partir do BancoDeDados
+		//Pois esse objeto vai está monitorado pelo JPA
+		//Depois eu pego esse objeto e atualizo esse objeto de acordo com o
+		//que foi enviado pelo parametro.
 		Cliente newObj = find(obj.getId());
 		//Atualize os dados desse newObj com base no objeto que veio como argumento.
 		updateData(newObj, obj);

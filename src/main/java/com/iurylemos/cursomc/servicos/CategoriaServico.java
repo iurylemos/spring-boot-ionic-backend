@@ -58,11 +58,14 @@ public class CategoriaServico {
 	//Metodo para atualização.
 	
 	public Categoria update(Categoria obj) {
-		//Diferença do insert para cá
-		//É justamente a programação defensiva o insert só vai inserir quando o id é nulo.
-		//Verificar se o id existe, utilizando o buscar.
-		find(obj.getId());
-		return repo.save(obj);
+		//Instanciar um categoria a partir do BancoDeDados
+		//Pois esse objeto vai está monitorado pelo JPA
+		//Depois eu pego esse objeto e atualizo esse objeto de acordo com o
+		//que foi enviado pelo parametro.
+		Categoria newObj = find(obj.getId());
+		//Atualize os dados desse newObj com base no objeto que veio como argumento.
+		updateData(newObj, obj);
+		return repo.save(newObj);
 	}
 	
 	//Metodo delete.
@@ -107,6 +110,10 @@ public class CategoriaServico {
 		//O utlimo que é properties é por onde eu quero ordenar.
 		PageRequest pageRequest = new PageRequest(page, linesPorPage, Direction.valueOf(direcao), orderBy);
 		return repo.findAll(pageRequest);
+	}
+	
+	private void updateData(Categoria newObj, Categoria obj) {
+		newObj.setNome(obj.getNome());
 	}
 		
 }
