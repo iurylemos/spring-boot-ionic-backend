@@ -2,21 +2,50 @@ package com.iurylemos.cursomc.dto;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.iurylemos.cursomc.servicos.validacao.ClienteInsert;
+
+//Vou criar uma anotação customizada.
+//Vou chama-la de @ClienteInsert
+//Ela não vai ser uma anotação do campo, vai ser uma anotação da classe
+
+@ClienteInsert
 public class ClienteNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	//Classe para servir quando eu for cadastrar um cliente.
 	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Length(min=5, max=120, message="O tamanho deve ser entre 5 e 120 caracteres")
 	private String nome;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
+	@Email(message="E-mail invalido") 
 	private String email;
+	
+	//Se fosse só cpf ou cpnj, tinha uma anotação para as duas @CPF, @CPNJ
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String cpfOuCnpj;
+	
 	private Integer tipo;
+	
 	//Dados do endereco
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String longadouro;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String numero;
+	
 	private String complemento;
+	
 	private String bairro;
+	
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String cep;
 	//Criando o telefone1
+	@NotEmpty(message="Preenchimento obrigatorio")
 	private String telefone1;
 	private String telefone2;
 	private String telefone3;

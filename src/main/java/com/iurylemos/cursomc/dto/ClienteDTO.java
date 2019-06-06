@@ -11,6 +11,7 @@ import com.iurylemos.cursomc.dominio.Cliente;
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	//ClientedeAtualizacao.
 	//Essa classe vai ter os dados básicos para eu ATUALIZAR,DELETAR, E LISTAR OS CLIENTES
 	
 	//O cliente tem ID, NOME e EMAIL, CPNJouCPF.
