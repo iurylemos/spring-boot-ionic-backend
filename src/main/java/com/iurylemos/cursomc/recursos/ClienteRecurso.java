@@ -1,5 +1,6 @@
 package com.iurylemos.cursomc.recursos;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dto.ClienteDTO;
+import com.iurylemos.cursomc.dto.ClienteNewDTO;
 import com.iurylemos.cursomc.servicos.ClienteServico;
 
 //Anotação para Rest
@@ -62,6 +65,34 @@ public class ClienteRecurso {
 		Cliente obj = servico.find(id);
 		return ResponseEntity.ok().body(obj);
 	}
+	
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+		//Esse metodo vai chamar um serviço que insere essa categoria no BD
+		//Coloquei obj recebendo pois na operação save ela me retorna um OBJETO.
+		//Modifiquei para DTO, e para validar aqui abaixo tenho que mudar no meu servico
+		//Para a validação do meu DTO ser valida preciso colocar a anotação Valid
+		//Botei para DTO pois fiz uma validação lá, com os nomes.
+		//Na classe de servico fiz um metodo que recebe uma categoriaDTO e retorna uma CATEGORIA
+		
+		Cliente obj = servico.fromDTO(objDto);
+		
+		obj = servico.insert(obj);
+		
+		//Fornecendo o ID como novo na nova URI. ou seja URL.
+		//tipo quando eu colocar /categorias/3, vai ter o novo id criado associado lá.
+		//Esse metodo fromCurrentRequest pega o localhost:8080/categorias.
+		//Para atribuir o valro do objeto eu utilizo o buildAndExpand
+		//E para finalizar converto ele para uri utilizando o toUri
+		
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
+		
+		//created gera o código 201 que recebe a URI como argumento
+		//e o build para gerar a resposta bonita para mim.
+		
+		return ResponseEntity.created(uri).build();
+	}
+	
 	
 	/***
 	 * Copiei do ClienteRecurso e vou alterar conforme os dados do cliente.

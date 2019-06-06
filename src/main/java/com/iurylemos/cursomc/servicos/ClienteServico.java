@@ -9,9 +9,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.iurylemos.cursomc.dominio.Cidade;
 import com.iurylemos.cursomc.dominio.Cliente;
+import com.iurylemos.cursomc.dominio.Endereco;
+import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 import com.iurylemos.cursomc.dto.ClienteDTO;
+import com.iurylemos.cursomc.dto.ClienteNewDTO;
 import com.iurylemos.cursomc.repositorios.ClienteRepositorio;
+import com.iurylemos.cursomc.repositorios.EnderecoRepositorio;
 import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
@@ -24,6 +29,9 @@ public class ClienteServico {
 	//Pelo mecanismo de injeção de depedência ou inversão de controle.
 	@Autowired
 	private ClienteRepositorio repo;
+	
+	@Autowired
+	private EnderecoRepositorio enderecoRepositorio;
 	
 	public Cliente find(Integer id) {
 		//Implementar um servico que busca uma categoria.
@@ -45,13 +53,42 @@ public class ClienteServico {
 		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null);
 	}
 	
+	//Sobrecarga do metodo acima para inserir um novo Cliente.
+	public Cliente fromDTO(ClienteNewDTO objDto) {
+		//No tipo tá como Inteiro mas na classe Cliente está como TipoCliente
+		//Então vou ter que converter esse tipo Inteiro para TipoCliente
+		//Vou utilizar o metodo que eu criei para conversão que é o toEnum
+		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()));
+		
+		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
+		//Agora vou instanciar o Endereco.
+		Endereco end = new Endereco(null, objDto.getLongadouro(), objDto.getNumero(), objDto.getComplemento(), objDto.getBairro(), objDto.getCep(), cli, cid);
+		
+		//Incluir o endereco dentro da lista de enderecos do cliente
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDto.getTelefone1());
+		if(objDto.getTelefone2() != null) {
+			cli.getTelefones().add(objDto.getTelefone2());
+		}
+		if(objDto.getTelefone3() != null) {
+			cli.getTelefones().add(objDto.getTelefone3());
+		}
+		return cli;
+	}
+	
 	
 	public Cliente insert(Cliente obj) {
 		//Progamação defensiva
 		//Garantir que realmente estou inserindo um objeto novo.
 		//Ou seja o objeto a ser inserido ele tem que ser nulo.
 		obj.setId(null);
-		return repo.save(obj);
+		obj = repo.save(obj);
+		//Para que o endereco apareça na lista quando eu estiver cadastrando um usuário
+		//Preciso utilizar o enderecoRepositorio para salvar ele no bd
+		//Para isso funcionar tenho que no fromDTO ter feito a associacao do cli.getEnd().add(end)
+		//pois o metodo que utiliza o insert aqui instancia o fromDTO antes do INSERT.
+		enderecoRepositorio.save(obj.getEnderecos());
+		return obj;
 	}
 	
 	//Metodo para atualização.
