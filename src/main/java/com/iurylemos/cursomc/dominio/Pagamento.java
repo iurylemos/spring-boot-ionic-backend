@@ -11,11 +11,23 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.iurylemos.cursomc.dominio.enums.EstadoPagamento;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "@type")
 public abstract class Pagamento implements Serializable {
+	/*
+	 * Anotação JsonTypeInfo é do pacote jackson
+	 * que é para serializar e deserializar.
+	 * Essa anotação está falando que a minha classe Pagamento
+	 * vai ter um campo adicional que se chama @type.
+	 * Na classes filhas eu coloco o
+	 * @JsonTypeName("pagamentoComBoleto")
+	 * @JsonTypeName("pagamentoComCartao")
+	 * 
+	 */
 	
 	//Quando tem muitos atributos na subclasse utilizamos
 	//a tabela independente

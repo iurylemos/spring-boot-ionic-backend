@@ -112,10 +112,12 @@ public class Pedido implements Serializable {
 		 * de itens pedidos e somar o subTotal de cada pedido atribuindo a variavel
 		 * auxiliar que eu criei que é a soma.
 		 */
-		double soma = 0.0;
-		for(ItemPedido ip: itens) {
+		 double soma = 0.0;
+		 /*for(ItemPedido ip: itens) {
 			soma = soma + ip.getSubTotal();
-		}
+		} */
+		//Expressão lambda.
+		soma = itens.stream().mapToDouble(ItemPedido::getSubTotal).sum();
 		return soma;
 	}
 

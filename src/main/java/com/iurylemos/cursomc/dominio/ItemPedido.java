@@ -102,6 +102,24 @@ public class ItemPedido implements Serializable {
 	public Produto getProduto() {
 		return id.getProduto();
 	}
+	/*
+	 * Eu só tinha os get para pedido e produto
+	 * ou seja o ItemPedido consegue apenas recuperar qual é o Pedido e o Produto associado a ele
+	 * Para que eu possar instanciar um novo item pedido e associar um pedido e um produto
+	 * a esse item de pedido eu tenho que implementar aqui tbm o setPedido e setProduto
+	 * e assim a classe ItemPedido é capaz de definir o pedido e produto associado a ele. 
+	 * Antes eu só conseguia por meio do construtor mas o framework não utiliza o construtor
+	 * com argumentos, ele utiliza o set e Get.
+	 * Inserção do pedido é eu fazer um ENDPOINT no servico e depois fazer o servico
+	 * que insere esse pedido.
+	 */
+	public void setPedido(Pedido pedido) {
+		id.setPedido(pedido);
+	}
+	
+	public void setProduto(Produto produto) {
+		id.setProduto(produto);
+	}
 	
 
 	public ItemPedidoPK getId() {
