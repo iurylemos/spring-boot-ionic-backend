@@ -160,6 +160,7 @@ public class CategoriaRecurso {
 	
 	//valor padrão do orderby se não for informado, vai ser por nome.
 	
+	//Passo 1 do caso de uso!
 	@RequestMapping(value="/page", method=RequestMethod.GET)
 	public ResponseEntity<Page<CategoriaDTO>> findPage(
 			@RequestParam(value="page", defaultValue="0") Integer page,

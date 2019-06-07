@@ -9,7 +9,8 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.servicos.validacao.ClienteUpdate;
 
-@ClienteUpdate
+//Anotação personalizada
+@ClienteUpdate 
 public class ClienteDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

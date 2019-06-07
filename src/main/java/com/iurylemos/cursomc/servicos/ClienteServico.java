@@ -159,5 +159,21 @@ public class ClienteServico {
 		newObj.setEmail(obj.getEmail());
 	}
 	
+	//Casos de USO está abaixo e depois > Aula de nivelamento SQL e JPQL abaixo. 
+	//Passo 11 : número é o código, tem que ser feito pelo backend
+	//Passo 11 é para salvar o pedido a ser escolhido do carrinho.
+	//Recebe esse pedido como argumento e retorna a instãncia monitorada do pedido inserido
+	//Como estou recebendo o numéro que é codigoId, vou ter que salvar no banco de dados
+	//Vou ter que projetar para salvar os pedidos no banco de dados
+	//Passo 7 já está cotemplada pelo sistema que é o /clientes/{id}
+	//Passo 4 e 5 faz parte do frontend.
+	/**
+	 * Metodo para realizar a busca pela lista paginada de produtos.
+	 * 
+	 * Recebe um nome e a lista de ids, e me retorna a lista paginada de produtos
+	 * 
+	 */
+	//Passo 2 e 3 eu conseguir indetificar que estava faltando isso no meu sistema.
+	
 	
 }
