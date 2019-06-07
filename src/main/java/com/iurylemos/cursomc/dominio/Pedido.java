@@ -103,6 +103,21 @@ public class Pedido implements Serializable {
 		this.cliente = cliente;
 		this.enderecoDeEntrega = enderecoDeEntrega;
 	}
+	/*
+	 * Metodo para retornar o valor total desses pedidos.
+	 */
+	public double getValorTotal() {
+		/*
+		 * Para calcular o valor total dos pedidos, basta eu pecorrer a lista
+		 * de itens pedidos e somar o subTotal de cada pedido atribuindo a variavel
+		 * auxiliar que eu criei que é a soma.
+		 */
+		double soma = 0.0;
+		for(ItemPedido ip: itens) {
+			soma = soma + ip.getSubTotal();
+		}
+		return soma;
+	}
 
 	public Integer getId() {
 		return id;

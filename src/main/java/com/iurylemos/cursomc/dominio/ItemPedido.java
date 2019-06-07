@@ -68,6 +68,17 @@ public class ItemPedido implements Serializable {
 		this.quantidade = quantidade;
 		this.preco = preco;
 	}
+	/*
+	 * Calcular o SUB-TOTAL dos precos dos pedidos - desconto * quantidade.
+	 * Vou colocar o get pois é reconhecido pelo JSON e vai ser serializado.
+	 * vai aparece no item do sub pedido lá no Postman, dizendo o valor total dele.
+	 */
+	
+	public double getSubTotal() {
+		return (preco - desconto) * quantidade;
+	}
+	
+	
 	
 	//Vou criar os gets do Pedido e dos Produtos
 	//Isso daqui é para eu ter acesso direto
