@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,10 +23,20 @@ import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 public class Cliente implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nome;
+	
+	/*
+	 * Para garantir que o campo seja único, ou seja não tenha repetições
+	 * basta colocar a anotação JPA que é a Column(unique=true)
+	 * Isso faz o bd garantir que não haverá repetições nesse campo.
+	 * Criar mais um teste em nossa validação customizada para não retornar 
+	 * aquela excessão feia.. DataIngretityExce..
+	 */
+	@Column(unique=true)
 	private String email;
 	private String cpfOuCnpj;
 	private Integer tipo;

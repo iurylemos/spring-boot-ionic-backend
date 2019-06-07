@@ -6,13 +6,21 @@ import java.util.List;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 import com.iurylemos.cursomc.dto.ClienteNewDTO;
 import com.iurylemos.cursomc.recursos.exceptions.FieldMessage;
+import com.iurylemos.cursomc.repositorios.ClienteRepositorio;
 import com.iurylemos.cursomc.servicos.validacao.utils.BR;
 
 //Especificar o <NOMEDAANOTACAO e o tipodaclasse que vai aceitar a nossa anotação
 public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert, ClienteNewDTO> {
+	
+	@Autowired
+	ClienteRepositorio repo;
+	
 	@Override
 	public void initialize(ClienteInsert ann) {
 	}
@@ -50,6 +58,22 @@ public class ClienteInsertValidator implements ConstraintValidator<ClienteInsert
 		if(objDto.getTipo().equals(TipoCliente.PESSOAJURIDICA.getCodigo()) && !BR.isValidCNPJ(objDto.getCpfOuCnpj())) {
 			list.add(new FieldMessage("cpfOuCnpj","CNPJ invalido"));
 		}
+		
+		/***
+		 * Metodo para saber se o email do cliente já existe.
+		 * E tentando se é o mesmo objDto que veio do banco de dados.
+		 */
+		Cliente aux = repo.findByEmail(objDto.getEmail());
+		if(aux != null) {
+			//Se for diferente de nulo significa que ele encontrou o registro no banco.
+			//que tinha esse email aqui do objDto.
+			//Nesse caso o e-mail que estou tentando inserir no objDto já existe.
+			list.add(new FieldMessage("email", "E-mail já existe no banco de dados"));
+		}
+		
+		
+		
+		
 		
 		
 		
