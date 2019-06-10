@@ -42,6 +42,9 @@ public class PedidoServico {
 	@Autowired
 	private ClienteServico clienteServico;
 	
+	@Autowired
+	private EmailServico emailServico;
+	
 	public Pedido find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
@@ -112,8 +115,8 @@ public class PedidoServico {
 			ip.setPedido(obj);
 		}
 		itemPedidoRepositorio.save(obj.getItens());
-		//Vou imprimir o obj, ou seja vou imprimir esse pedido.
-		System.out.println(obj);
+		//Tenho que definir que essa interface vai ser instaciada como um FalsoEmailServico
+		emailServico.enviarEmailConfirmacaoPedido(obj);
 		return obj;
 	}
 	
