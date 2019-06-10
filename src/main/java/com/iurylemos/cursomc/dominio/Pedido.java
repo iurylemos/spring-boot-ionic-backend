@@ -221,7 +221,7 @@ public class Pedido implements Serializable {
 		//Acessar o pagamento, acessar o estado do pagamento e acessar a descrição
 		//Para vir a mensagem que tem sobre o estado do pagamento
 		builder.append(getPagamento().getEstado().getDescricao());
-		builder.append("\n Detalhes: \n");
+		builder.append("\nDetalhes: \n");
 		//Itens do pedido na lista de itens aqui da minha classe pedido.
 		for(ItemPedido ip : getItens()) {
 			//Concateno dizendo que cada item vai chamar o seu toString e imprimir aqui no meu pedido

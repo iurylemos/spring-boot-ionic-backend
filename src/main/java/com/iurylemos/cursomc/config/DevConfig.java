@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.iurylemos.cursomc.servicos.DBServico;
+import com.iurylemos.cursomc.servicos.EmailServico;
+import com.iurylemos.cursomc.servicos.SmtpEmailServico;
 
 @Configuration
 @Profile("dev")
@@ -82,6 +84,26 @@ public class DevConfig {
 		dbServico.instanciacaoTestDatabase();
 		
 		return true;
+	}
+	
+	/*
+	 * Metodo para envio de enviarEmailFalso
+	 * 
+	 * O IMPORTANTE A SE ENTENDER AQUI É QUE
+	 * QUANDO A GENTE FAZ UM METODO A ANOTAÇÃO @BEAN
+	 * ESSE CARA VAI ESTAR DISPONÍVEL COMO UM COMPONENTE AQUI NO SISTEMA
+	 * ENTÃO SE EM OUTRA CLASSE QUE REALIZAMOS UMA INJEÇÃO DE DEPEDÊNCIA 
+	 * EMAILSERVICO IGUAL NO PEDIDOSERVICO
+	 * O SPRING VAI PROCURAR POR UM COMPONENTE QUE PODE SER @BEAN
+	 * QUE ME DEVOLVE UMA INSTÃNCIA DESSE CARA.
+	 * AI ELE VAI ENCONTRAR ESSE METODO ABAIXO
+	 * E VAI ME RETORNAR UMA NOVA INSTANCIA DO SMTPEMAILSERVICO()
+	 * ISSO É AUTOMATICO.
+	 */
+	
+	@Bean
+	public EmailServico emailServico() {
+		return new SmtpEmailServico();
 	}
 
 }
