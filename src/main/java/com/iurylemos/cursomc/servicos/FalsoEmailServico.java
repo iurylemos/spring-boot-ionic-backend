@@ -1,5 +1,7 @@
 package com.iurylemos.cursomc.servicos;
 
+import javax.mail.internet.MimeMessage;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
@@ -18,6 +20,14 @@ public class FalsoEmailServico extends AbstractEmailServico {
 		LOG.info(msg.toString());
 		LOG.info("Email enviado");
 		
+	}
+
+	@Override
+	public void enviarHtmlEmail(MimeMessage msg) {
+		//Implementar o envio de email de mentira aqui..
+		LOG.info("Simulando envio de e-mail HTML");
+		LOG.info(msg.toString());
+		LOG.info("Email enviado");
 	}
 
 }

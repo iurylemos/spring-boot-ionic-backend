@@ -2,8 +2,16 @@ package com.iurylemos.cursomc.servicos;
 
 import java.util.Date;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import com.iurylemos.cursomc.dominio.Pedido;
 
@@ -14,6 +22,13 @@ public abstract class AbstractEmailServico implements EmailServico {
 	@Value("${default.sender}")
 	private String sender;
 	
+	
+	
+	@Autowired
+	private TemplateEngine templateEngine;
+	
+	@Autowired
+	private JavaMailSender javaMailSender;
 	
 	/*
 	 * Dando corpo a um metodo do EmailServico
@@ -69,4 +84,78 @@ public abstract class AbstractEmailServico implements EmailServico {
 		return sm;
 	}
 
+	/*
+	 * Criar um metodo auxiliar
+	 * para ele pegar o template de email HTML que eu criei
+	 * e povoar esse template com os dados de um pedido e retornar para mim
+	 * um String correspondendo a esse HTML preenchido
+	 * 
+	 * COM ESSE METODO AQUI:
+	 * PEGA O TEMPLATE, INJETA O OBJETO PEDIDO LÁ DENTRO
+	 * PROCESSA O TEMPLATE E ME RETORNAR O HTML NA FORMA DE STRING.
+	 * 
+	 * 
+	 */
+	protected String htmlParaTemplatePedido(Pedido obj) {
+		//Instanciar um objeto do tipo Context
+		//Eu preciso de um objeto como esse para acessar o meu template.
+		Context context = new Context();
+		//Povar o template com os dados do pedido.
+		//Como lá tem pedido.id, pedido.remetente e etc tenho que colocar
+		//Define que o meu template vai utilizar o obj que é o pedido
+		//Com o nome de pedido.
+		context.setVariable("pedido", obj);
+		//processar o template para me retornar o html na forma de String.
+		//Preciso instanciar do TemplateEngine e essa instanciar vou injetar na minha classe aqui
+		/*
+		 * No primeiro parametro eu coloco o caminho onde está o template.
+		 * e no outro o CONTEXT
+		 */
+		return templateEngine.process("email/confirmacaoPedido", context);
+	}
+	
+	@Override
+	public void enviarEmailConfirmacaoHtmlPedido(Pedido obj) {
+		try {
+			MimeMessage mm = prepararMimeMessagemDeEmailParaPedido(obj);
+			//TemplateMethod a gente tá chamando um metodo que nem está implementado
+			//Mas o compilador aceita numa boa..
+			enviarHtmlEmail(mm);
+		} catch(MessagingException e) {
+			//Se acontecer uma messageExceptio na hora de gerar a messagemHtml
+			//Vou chamar o metodo para enviar o email de texto plano mesmo..
+			enviarEmailConfirmacaoPedido(obj);
+		}
+			
+	}
+
+	//Botei como protected para ser reaproveitado em alguma subclasse.
+	//Esse metodo pode gerar uma excessão e no metodo acima vou tratar essa excessão.
+	//Antes de acontecer..
+	protected MimeMessage prepararMimeMessagemDeEmailParaPedido(Pedido obj) throws MessagingException {
+		/*
+		 * Pegar o pedido e gerar um objeto do tipo MimeMessage
+		 * Para pegar um objeto desse tipo preciso injetar nessa classe
+		 * JavaMailSender
+		 */
+		
+		MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+		//Agora para ter o poder de atribuir valores a essa mensagem
+		//Preciso istanciar um MimeMessageHelper
+		MimeMessageHelper mmh = new MimeMessageHelper(mimeMessage, true);
+		//Destinatário
+		mmh.setTo(obj.getCliente().getEmail());
+		//remetente no caso eu vou pegar o sender.
+		mmh.setFrom(sender);
+		//Assunto do email
+		mmh.setSubject("Pedido Confirmado! Código: "+ obj.getId());
+		//Instante do email
+		mmh.setSentDate(new Date(System.currentTimeMillis()));
+		/*
+		 * Corpo do email vai ser o meu emailHtml
+		 * Processado a partir do meu template TymeLift
+		 */
+		mmh.setText(htmlParaTemplatePedido(obj), true);
+		return mimeMessage; 
+	}
 }

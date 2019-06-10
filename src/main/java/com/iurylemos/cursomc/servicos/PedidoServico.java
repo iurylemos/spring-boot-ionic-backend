@@ -116,7 +116,7 @@ public class PedidoServico {
 		}
 		itemPedidoRepositorio.save(obj.getItens());
 		//Tenho que definir que essa interface vai ser instaciada como um FalsoEmailServico
-		emailServico.enviarEmailConfirmacaoPedido(obj);
+		emailServico.enviarEmailConfirmacaoHtmlPedido(obj);
 		return obj;
 	}
 	
