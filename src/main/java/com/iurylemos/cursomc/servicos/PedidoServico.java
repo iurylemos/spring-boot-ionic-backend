@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.iurylemos.cursomc.dominio.ItemPedido;
 import com.iurylemos.cursomc.dominio.PagamentoComBoleto;
@@ -38,6 +39,9 @@ public class PedidoServico {
 	@Autowired
 	private ItemPedidoRepositorio itemPedidoRepositorio;
 	
+	@Autowired
+	private ClienteServico clienteServico;
+	
 	public Pedido find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
@@ -52,10 +56,18 @@ public class PedidoServico {
 		return obj;
 	}
 	
+	@Transactional
 	public Pedido insert(Pedido obj) {
 		//Inserindo nulo no ID para garantir que estou inserindo nulo.
 		obj.setId(null);
 		obj.setInstantePedido(new Date());
+		//Setando o cliente no insert
+		//Ou seja nesse objeto que tinha só o ID getCliente
+		//Eu vou usar esse ID para buscar do banco de dados que está no clienteServico
+		//e lá está CLIENTE INTEIRO e seto ele como objeto associado ao meu obj
+		obj.setCliente(clienteServico.find(obj.getCliente().getId()));
+		
+		
 		//Pagamento
 		//Um pedido que estou acabando de inserir o estado dele ainda está PENDENTE.
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
@@ -83,15 +95,25 @@ public class PedidoServico {
 		//E para cada item desse eu atribuo o zero.
 		for(ItemPedido ip : obj.getItens()) {
 			ip.setDesconto(0.0);
+			/*
+			 * Esse produtoServico.find(ip.getProduto().getId())
+			 * Tenho que setar ele como produto do meu ITEM. ItemProduto
+			 * Agora o meu item de pedido está associado com o produto
+			 * que eu busquei do banco de dados
+			 * Agora vou usar esse produto para associar ao preço do meu item.
+			 */
+			ip.setProduto(produtoServico.find(ip.getProduto().getId()));
 			//getId por que? Por que o ID vai está presente no produto que eu mandei
 			//Pego esse id e busco no BD o produto inteiro
 			//De posse com o produto inteiro na mão eu chamo o getPreco
 			//Agora eu estou setando o preco do ItemPedido como mesmo preco do Produto.
-			ip.setPreco(produtoServico.find(ip.getProduto().getId()).getPreco());
+			ip.setPreco(ip.getProduto().getPreco());
 			//Associando o item de pedido com o pedido que estou inserindo que é o obj.
 			ip.setPedido(obj);
 		}
 		itemPedidoRepositorio.save(obj.getItens());
+		//Vou imprimir o obj, ou seja vou imprimir esse pedido.
+		System.out.println(obj);
 		return obj;
 	}
 	

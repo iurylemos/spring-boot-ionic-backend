@@ -1,9 +1,12 @@
 package com.iurylemos.cursomc.dominio;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -177,6 +180,31 @@ public class ItemPedido implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		//Formatando os valores na hora de imprimir. chamo o NumberFormat do JAVA mesmo
+		//Vou instacia-lo chamando o metodo getCurrencyInstance que é 
+		//uma instancia de dinheiro.
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		/*
+		 * Coloquei com StringBuilder e StringBuffered
+		 * para ser mais perfomático e mais eficiente na implementação.
+		 * Ele gera um código básico
+		 * instaciando um StringBuilder e ele vai concatenando
+		 * trechos de String e no final ele gera um String 
+		 */
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduto().getNome());
+		builder.append(" , Quantidade: ");
+		builder.append(getQuantidade());
+		builder.append(", Preco Unitário: ");
+		builder.append(nf.format(getPreco()));
+		builder.append(", Subtotal: ");
+		builder.append(nf.format(getSubTotal()));
+		builder.append("\n");
+		return builder.toString();
 	}
 	
 	

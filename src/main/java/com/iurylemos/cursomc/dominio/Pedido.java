@@ -1,8 +1,11 @@
 package com.iurylemos.cursomc.dominio;
 
 import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -194,6 +197,41 @@ public class Pedido implements Serializable {
 		return true;
 	}
 
-	//HashCodeEquals Objetos não podem ser iguais.
+	/*
+	 * Botei só o id, por que vou fazer a implementação na mão mesmo.
+	 */
+	
+	@Override
+	public String toString() {
+		//Formatando os valores na hora de imprimir. chamo o NumberFormat do JAVA mesmo
+		//Vou instacia-lo chamando o metodo getCurrencyInstance que é 
+		//uma instancia de dinheiro.
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		//Formatação da data.
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+				
+		StringBuilder builder = new StringBuilder();
+		builder.append("Pedido número: ");
+		builder.append(getId());
+		builder.append(" , Instante: ");
+		builder.append(sdf.format(getInstantePedido()));
+		builder.append(" , Cliente: ");
+		builder.append(getCliente().getNome());
+		builder.append(" , Situação do pagamento: ");
+		//Acessar o pagamento, acessar o estado do pagamento e acessar a descrição
+		//Para vir a mensagem que tem sobre o estado do pagamento
+		builder.append(getPagamento().getEstado().getDescricao());
+		builder.append("\n Detalhes: \n");
+		//Itens do pedido na lista de itens aqui da minha classe pedido.
+		for(ItemPedido ip : getItens()) {
+			//Concateno dizendo que cada item vai chamar o seu toString e imprimir aqui no meu pedido
+			builder.append(ip.toString());
+		}
+		builder.append("Valor total: ");
+		builder.append(nf.format(getValorTotal()));
+		return builder.toString();
+	}
+
+	
 	
 }
