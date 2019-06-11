@@ -7,14 +7,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import com.iurylemos.cursomc.security.JWTAuthenticationFilter;
+import com.iurylemos.cursomc.security.JWTUtil;
 
 @Configuration //anotando como classe de configuração.
 @EnableWebSecurity
@@ -23,6 +28,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	//Depedência para utilizar o banco H2 de teste
 	@Autowired
 	private Environment env;
+	
+	//Injeção do jwtUtil
+	@Autowired
+	private JWTUtil jwtUtil;
+	
+	/*
+	 * O Framework é iteligente a ponto
+	 * Eu injetei a interface o SPRING vai buscar no SISTEMA
+	 * uma implementação dessa interface, e ele vai encontrar
+	 * a UserDetailsServicoImpl e vai injetar uma instância aqui para gente
+	 * essa instãncia é que vou utilizar para saber quem é o cara
+	 * que é capaz de buscar um usuário por email.
+	 */
+	@Autowired
+	private UserDetailsService userDetailsService;
+	
+	
 	
 	//Definir um vetor de String 
 	//para dizer quais os caminhos por padrão vão estar libeirados.
@@ -97,10 +119,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
 			.antMatchers(PUBLIC_MATCHERS).permitAll()
 			.anyRequest().authenticated();
+		//Acrescentando o metodo criado lá no JWTAuthenticatio
+		//Para tentativa de login.
+		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
 		//Acrescentar a configuração abaixo
 		//Que assegura que o nosso backend não cria a sessão de usuário.
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
+	
+	
+	//Sobrecarga do metodo.
+	//configure recebendo o Authnetication..
+	//Esse ManagerBuilder chamei ele de auth
+	//E apartir dele vou dizer quem é o userDetailsService
+	//e no caso do passwordEncoder é bCryptPasswordEncoder
+	//que já está definido aqui nessa classe.
+	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 	/*
 	 * Definindo um bean de CorsConfigurationSource
 	 * e definindo um acesso básico de multiplasfontes para todos os caminhos
