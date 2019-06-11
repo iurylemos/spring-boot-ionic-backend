@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.iurylemos.cursomc.security.JWTAuthenticationFilter;
+import com.iurylemos.cursomc.security.JWTAuthorizationFilter;
 import com.iurylemos.cursomc.security.JWTUtil;
 
 @Configuration //anotando como classe de configuração.
@@ -115,6 +116,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//Para indicar que só vou permitir o metodo GET
 		//Os cara que estiverem no meu VETOR.
 		
+		
 		http.authorizeRequests()
 			.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
 			.antMatchers(PUBLIC_MATCHERS).permitAll()
@@ -122,9 +124,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//Acrescentando o metodo criado lá no JWTAuthenticatio
 		//Para tentativa de login.
 		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+		//Colocando o filtro de autorização no meu Security
+		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 		//Acrescentar a configuração abaixo
 		//Que assegura que o nosso backend não cria a sessão de usuário.
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		
 	}
 	
 	
