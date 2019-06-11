@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.iurylemos.cursomc.dominio.Cidade;
@@ -33,6 +34,10 @@ public class ClienteServico {
 	@Autowired
 	private EnderecoRepositorio enderecoRepositorio;
 	
+	@Autowired
+	private BCryptPasswordEncoder pe;
+	
+	
 	public Cliente find(Integer id) {
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
@@ -50,7 +55,7 @@ public class ClienteServico {
 	//Metodo auxiliar.
 	//a partir de um objeto DTO, vou construir um objeto Cliente.
 	public Cliente fromDTO(ClienteDTO objDto) {
-		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null);
+		return new Cliente(objDto.getId(), objDto.getNome(), objDto.getEmail(), null, null, null);
 	}
 	
 	//Sobrecarga do metodo acima para inserir um novo Cliente.
@@ -58,7 +63,8 @@ public class ClienteServico {
 		//No tipo tá como Inteiro mas na classe Cliente está como TipoCliente
 		//Então vou ter que converter esse tipo Inteiro para TipoCliente
 		//Vou utilizar o metodo que eu criei para conversão que é o toEnum
-		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()));
+		//A senha vai ser encondada pelo bCrypt
+		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(), TipoCliente.toEnum(objDto.getTipo()), pe.encode(objDto.getSenha()));
 		
 		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
 		//Agora vou instanciar o Endereco.

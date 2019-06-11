@@ -41,6 +41,13 @@ public class Cliente implements Serializable {
 	private String cpfOuCnpj;
 	private Integer tipo;
 	
+	//Coloquei a anotação @JsonIgnore
+	//Para não ficar aparecendo no Json quando recuperar um cliente
+	//Não aparecer o bcript da senha
+	//Não é bom incluir o campo senha quando vai recuperar os dados do sistema. 
+	@JsonIgnore 
+	private String senha;
+	
 	/*
 	 * Modifiquei: private TipoCliente tipo;
 	 * para private Integer tipo;
@@ -111,7 +118,7 @@ public class Cliente implements Serializable {
 		
 	}
 
-	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo) {
+	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
 		super();
 		this.id = id;
 		this.nome = nome;
@@ -123,6 +130,7 @@ public class Cliente implements Serializable {
 		//Operador ternário.
 		//Para ele ou atribuir nulo ou atribuir o código caso o tipo seja nulo.
 		this.tipo = (tipo==null) ? null : tipo.getCodigo();
+		this.senha = senha;
 	}
 
 	public Integer getId() {
@@ -170,7 +178,15 @@ public class Cliente implements Serializable {
 		this.tipo = tipo.getCodigo();
 	}
 	//Acima macete do TipoCliente
+	
+	public String getSenha() {
+		return senha;
+	}
 
+	public void setSenha(String senha) {
+		this.senha = senha;
+	}
+	
 	public List<Endereco> getEnderecos() {
 		return enderecos;
 	}
@@ -194,6 +210,8 @@ public class Cliente implements Serializable {
 	public void setPedidos(List<Pedido> pedidos) {
 		this.pedidos = pedidos;
 	}
+	
+	
 
 	@Override
 	public int hashCode() {
