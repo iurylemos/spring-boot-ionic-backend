@@ -20,6 +20,7 @@ import com.iurylemos.cursomc.dominio.PagamentoComCartao;
 import com.iurylemos.cursomc.dominio.Pedido;
 import com.iurylemos.cursomc.dominio.Produto;
 import com.iurylemos.cursomc.dominio.enums.EstadoPagamento;
+import com.iurylemos.cursomc.dominio.enums.Perfil;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 import com.iurylemos.cursomc.repositorios.CategoriaRepositorio;
 import com.iurylemos.cursomc.repositorios.CidadeRepositorio;
@@ -163,17 +164,24 @@ public class DBServico {
 		Cliente cli1 = new Cliente(null, "Iury Lemos", "iurylemos10@gmail.com", "36378912377", TipoCliente.PESSOAFISICA, pe.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("32307858", "988572721"));
 		
+		Cliente cli2 = new Cliente(null, "Bignardo Gomes", "bignardo@gmail.com", "38534377022", TipoCliente.PESSOAFISICA, pe.encode("123"));
+		cli1.getTelefones().addAll(Arrays.asList("34511742", "988542154"));
+		cli2.addPerfil(Perfil.ADMIN);
+		
 		Endereco e1 = new Endereco(null, "Rua Flores", "300" , "Apto 303", "Bom Jardim", "60383282", cli1 , c1);
 		Endereco e2 = new Endereco(null, "Avenidade Matos", "105" , "Sala 800", "Centro", "60353322", cli1 , c2);
+		Endereco e3 = new Endereco(null, "Avenidade Grande", "2105" , null, "Conj Ceara", "604453322", cli2 , c2);
+		
 		
 		//Associar o cliente a conhecer os endereco.
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		cli2.getEnderecos().addAll(Arrays.asList(e3));
 		
 		//Salvando no banco com os repositórios.
 		//Salvo primeiro quem é independente que é o cliente.
 		//E depois salvo os enderecos.
-		clienteRepositorio.save(Arrays.asList(cli1));
-		enderecoRepositorio.save(Arrays.asList(e1, e2));
+		clienteRepositorio.save(Arrays.asList(cli1, cli2));
+		enderecoRepositorio.save(Arrays.asList(e1, e2, e3));
 		
 		/**
 		 * Instaciação dos pedidos e pagamentos

@@ -5,18 +5,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iurylemos.cursomc.dominio.enums.Perfil;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 
 @Entity
@@ -103,6 +106,15 @@ public class Cliente implements Serializable {
 	@CollectionTable(name="TELEFONE")
 	private Set<String> telefones = new HashSet<>();
 	
+	//Cliente de acordo com o PERFIL.
+	//Garantir sempre que eu busque um cliente no BD 
+	//Vai ser buscado os perfis também, por isso a anotação.
+	@ElementCollection(fetch=FetchType.EAGER)
+	@CollectionTable(name="PERFIS")
+	private Set<Integer> perfis = new HashSet<>();
+	
+	
+	
 	//Cliente conhece o pedido.
 	//mappedBy foi mapeado pelo cliente que tem lá do outro lado
 	//Não vou permitir que o cliente serialize os pedidos
@@ -115,7 +127,9 @@ public class Cliente implements Serializable {
 	
 	
 	public Cliente() {
-		
+		//Todo usuário do meu sistema vai ter o perfil de CLIENTE
+		//Alguns que eu determinar que vão ser admin também.
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Cliente(Integer id, String nome, String email, String cpfOuCnpj, TipoCliente tipo, String senha) {
@@ -131,6 +145,7 @@ public class Cliente implements Serializable {
 		//Para ele ou atribuir nulo ou atribuir o código caso o tipo seja nulo.
 		this.tipo = (tipo==null) ? null : tipo.getCodigo();
 		this.senha = senha;
+		addPerfil(Perfil.CLIENTE);
 	}
 
 	public Integer getId() {
@@ -185,6 +200,24 @@ public class Cliente implements Serializable {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	
+	public Set<Perfil> getPerfis() {
+		//Perfil é o tipo enumerado.
+		//Dentro da coleção perfil eu estou guardando números inteiros.
+		//Para converter eu uso o metodo toEnum da própria classe Perfil.
+		//retornando os perfils do cliente
+		//transformando em stream, e map
+		//Para cada eleemento x dessa coleção
+		//Vou converter para Inteiro e depois converto para lista
+		//Ai fica uma lista de Set Inteiros.
+		return perfis.stream().map(x -> Perfil.toEnum(x)).collect(Collectors.toSet());
+	}
+	
+	//Adicionando perfil
+	public void addPerfil(Perfil perfil) {
+		//adicionando na minha lista os códigos pois são números inteiros
+		perfis.add(perfil.getCodigo());
 	}
 	
 	public List<Endereco> getEnderecos() {
