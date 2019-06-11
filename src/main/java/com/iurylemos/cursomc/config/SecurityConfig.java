@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,9 +22,14 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.iurylemos.cursomc.security.JWTAuthenticationFilter;
 import com.iurylemos.cursomc.security.JWTAuthorizationFilter;
 import com.iurylemos.cursomc.security.JWTUtil;
+//Anotação para depois eu dizer quem pode acessar os meus endpoint @ENableGlobal
+//Ai depois eu coloco lá no meu CategoriaRecurso os @PreAuthorize("hasAnyRole('ADMIN')")
+//Para dizer que só quem vai ter acesso são os admin.
 
 @Configuration //anotando como classe de configuração.
+
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) 
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	//Depedência para utilizar o banco H2 de teste
@@ -66,11 +72,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private static final String[] PUBLIC_MATCHERS_GET = {
 			"/produtos/**",
-			"/categorias/**",
-			"/clientes/**"
+			"/categorias/**"
 	};
 	
-	
+	/*
+	 * VETOR PARA POST
+	 * de usuários não logados, ou seja para aqueles que desejam se cadastrar..
+	 */
+	private static final String[] PUBLIC_MATCHERS_POST = {
+			"/clientes/**"
+	};
 	
 
 	//Sobreescrever um metodo do WebSecutiryConfigurerAdapter
@@ -118,6 +129,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		
 		http.authorizeRequests()
+			.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
 			.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
 			.antMatchers(PUBLIC_MATCHERS).permitAll()
 			.anyRequest().authenticated();

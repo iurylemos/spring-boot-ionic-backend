@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +77,8 @@ public class CategoriaRecurso {
 	//Para que esse objeto seja construido a partir do JSON que eu enviar
 	//Tenho que colocar do lado lá do parametro o @RequestBody
 	//Isso faz com oque o JSON seja convertido para objeto JAVA automaticamente
-	
+
+	@PreAuthorize("hasAnyRole('ADMIN')") //Só quem pode inserir são os ADMIN
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody CategoriaDTO objDto) {
 		//Esse metodo vai chamar um serviço que insere essa categoria no BD
@@ -107,6 +109,7 @@ public class CategoriaRecurso {
 	//Metodo para atualização.
 	//Esse metodo vai ter o id pois é apartir desse id que eu atualizo o campo.
 	//Vai ser uma mistura do GET com o POST.
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> update(@Valid @RequestBody CategoriaDTO objDto, @PathVariable Integer id) {
 		//Garantir que a categoria que vai ser atualizada é a que eu passar o código na URL
@@ -120,6 +123,7 @@ public class CategoriaRecurso {
 	}
 	
 	//Metodo deletar.
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> delete(@PathVariable Integer id) {
 		servico.delete(id);
