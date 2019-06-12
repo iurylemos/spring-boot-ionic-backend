@@ -3,9 +3,13 @@ package com.iurylemos.cursomc.servicos;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dominio.ItemPedido;
 import com.iurylemos.cursomc.dominio.PagamentoComBoleto;
 import com.iurylemos.cursomc.dominio.Pedido;
@@ -13,6 +17,8 @@ import com.iurylemos.cursomc.dominio.enums.EstadoPagamento;
 import com.iurylemos.cursomc.repositorios.ItemPedidoRepositorio;
 import com.iurylemos.cursomc.repositorios.PagamentoRepositorio;
 import com.iurylemos.cursomc.repositorios.PedidoRepositorio;
+import com.iurylemos.cursomc.security.UserSS;
+import com.iurylemos.cursomc.servicos.exceptions.AuthorizationException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
 @Service
@@ -119,6 +125,43 @@ public class PedidoServico {
 		emailServico.enviarEmailConfirmacaoHtmlPedido(obj);
 		return obj;
 	}
+	
+	/**
+	 * 
+	 * Copiei metodo lá do CategoriaServico pois lá tinha implementado.
+	 */
+		//Função para me retornar somente os clientes
+		//Paginação.
+		//Vou utilizar uma classe chamada Page
+		//Encapsula informações e operações sobre a paginação.
+		//Dentro do parametro vou informar a pagina que eu quero
+		//Entou coloco o Integer page.
+		//E a outra informação vai ser a linhas por pagina eu quero.
+		//E a outra vai ser por qual atributo eu quero ordernar.
+		//O outro vai ser em qual direção eu quero ordenar
+		//Se é descedente ou ascendente
+		public Page<Pedido> findPage(Integer page, Integer linesPorPage, String orderBy, String direcao){
+			//Para uma consulta para retornar uma pagina de dados
+			//Tenho que criar um outro objeto do tipo PageRequest do Spring data
+			//Ele vai ser um objeto que vai preparar aqui para minhas informações
+			//Para que eu faça a consulta que me retorna a minha pagina de dados.
+			//O utlimo que é properties é por onde eu quero ordenar.
+			/*
+			 * Verificar se o usuário está logado
+			 */
+			UserSS user = UsuarioServico.authenticated();
+			if(user == null) {
+				throw new AuthorizationException("Acesso negado!");
+			}
+			PageRequest pageRequest = new PageRequest(page, linesPorPage, Direction.valueOf(direcao), orderBy);
+			//retornar sómente os pedidos do cliente que está logado.
+			//Instanciar o cliente por meio do clienteServico pegando o ID
+			//Que veio no usuário autenticado.
+			Cliente cliente = clienteServico.find(user.getId());
+			//Como estou com o cliente na mão
+			//Vou chamar o metodo que eu criei para buscar o pedido a partir do ID do cliente
+			return repo.findByCliente(cliente, pageRequest);
+		}
 	
 
 }

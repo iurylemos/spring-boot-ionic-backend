@@ -5,11 +5,13 @@ import java.net.URI;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -85,5 +87,24 @@ public class PedidoRecurso {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(obj.getId()).toUri();
 
 		return ResponseEntity.created(uri).build();
+	}
+	
+	/*
+	 * Copiei esse metodo pois já tinha criado no CategoriaRecurso
+	 * tirei o value ="/page" pois estou aproveitando o endpoint da classe
+	 * que é o /pedidos
+	 * 
+	 * Coloquei o ordeby por instante, pois quero ordenar por DATA.
+	 */
+	
+	@RequestMapping(method=RequestMethod.GET)
+	public ResponseEntity<Page<Pedido>> findPage(
+			@RequestParam(value="page", defaultValue="0") Integer page,
+			@RequestParam(value="linesPorPage", defaultValue="24") Integer linesPorPage, 
+			@RequestParam(value="orderBy", defaultValue="instantePedido" ) String orderBy, 
+			@RequestParam(value="direcao", defaultValue="DESC" ) String direcao) {
+		Page<Pedido> list = servico.findPage(page, linesPorPage, orderBy, direcao);
+		
+		return ResponseEntity.ok().body(list);
 	}
 }
