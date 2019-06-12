@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.iurylemos.cursomc.servicos.exceptions.AuthorizationException;
 import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
@@ -83,5 +84,23 @@ public class RecursoExceptionHandler {
 		
 		
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+	}
+	
+	/*
+	 *  Copiei o objetoNotFountException
+	 *  E para essa excessão que eu criei ser válida
+	 *  tenho que criar aqui dentro do Handler
+	 *  
+	 *  Coloquei nas ordens da aula, como essa foi a ultima botei aqui.
+	 * 
+	 * 
+	 * 
+	 */
+	@ExceptionHandler(AuthorizationException.class)
+	public ResponseEntity<ErroPadrao> authorization(AuthorizationException e, HttpServletRequest request) {
+	
+		//Como é o erro do acesso negado ai no lugar do NOT_FOUND, boto o FORBIDDEN
+		ErroPadrao erro = new ErroPadrao(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(erro);
 	}
 }

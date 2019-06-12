@@ -96,5 +96,23 @@ public class UserSS implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+	//Pegando se o usuário é ADMIN ou USUÁRIO
+	public boolean hasRole(Perfil perfil) {
+		/*
+		 * Vou verificar se o perfil que veio como parametro 
+		 * se ele pertence a lista de authoritites do meu usuário
+		 * só que essa lista está na forma de GrantedAuthorities
+		 * Então vou ter que converter esse perfil para o tipo
+		 * equivalente ao GrantedAuthorities
+		 * eu faço a conversão na instanciação da classe SimpleGrantedAuthroty
+		 * e como o perfil lá se ele é ADMIN ou usuário está na descrição
+		 * ai eu coloco getDescricao()
+		 * 
+		 * E isso testa se esse Usuário possui um dado perfil.
+		 */
+		return getAuthorities().contains(new SimpleGrantedAuthority(perfil.getDescricao()));
+		
+	}
 
 }

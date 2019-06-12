@@ -13,11 +13,14 @@ import org.springframework.stereotype.Service;
 import com.iurylemos.cursomc.dominio.Cidade;
 import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dominio.Endereco;
+import com.iurylemos.cursomc.dominio.enums.Perfil;
 import com.iurylemos.cursomc.dominio.enums.TipoCliente;
 import com.iurylemos.cursomc.dto.ClienteDTO;
 import com.iurylemos.cursomc.dto.ClienteNewDTO;
 import com.iurylemos.cursomc.repositorios.ClienteRepositorio;
 import com.iurylemos.cursomc.repositorios.EnderecoRepositorio;
+import com.iurylemos.cursomc.security.UserSS;
+import com.iurylemos.cursomc.servicos.exceptions.AuthorizationException;
 import com.iurylemos.cursomc.servicos.exceptions.DataIntegrityException;
 import com.iurylemos.cursomc.servicos.exceptions.ObjetoNotFountException;
 
@@ -39,6 +42,18 @@ public class ClienteServico {
 	
 	
 	public Cliente find(Integer id) {
+		//Usuario logado está dentro do metodo authenticated.
+		UserSS user = UsuarioServico.authenticated();
+		/*
+		 * Se o usuário logado não for ADMIN, e se o id dele não for igual 
+		 * Se o usuário for nulo, e não possuir o perfil de ADMIN
+		 * E se não for igual ao id do usuario logado!
+		 */
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+		
+		
 		//Implementar um servico que busca uma categoria.
 		//Busco o ID e retorno ele.
 		//findOne, se o Id existe, ele retorna, se não é nulo.
