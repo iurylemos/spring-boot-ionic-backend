@@ -4,6 +4,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.springframework.mail.SimpleMailMessage;
 
+import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dominio.Pedido;
 
 public interface EmailServico {
@@ -28,6 +29,12 @@ public interface EmailServico {
 	void enviarEmailConfirmacaoHtmlPedido(Pedido obj);
 	
 	void enviarHtmlEmail(MimeMessage msg);
+	
+	/*
+	 * A implementação do metodo abaixo vai está no AbstractEmailServico
+	 */
+	
+	void enviarNovaSenhaEmail(Cliente cliente, String newSenha);
 	
 
 }

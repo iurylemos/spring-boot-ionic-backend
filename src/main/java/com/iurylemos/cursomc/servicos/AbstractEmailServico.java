@@ -13,6 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.iurylemos.cursomc.dominio.Cliente;
 import com.iurylemos.cursomc.dominio.Pedido;
 
 public abstract class AbstractEmailServico implements EmailServico {
@@ -157,5 +158,42 @@ public abstract class AbstractEmailServico implements EmailServico {
 		 */
 		mmh.setText(htmlParaTemplatePedido(obj), true);
 		return mimeMessage; 
+	}
+	
+	@Override
+	public void enviarNovaSenhaEmail(Cliente cliente, String newSenha) {
+		//Copiei isso do outro metodo enviarEmailConfirmacaoPedido
+		//E o metodo prepararNovaSenhaEmail
+		//foi criado abaixo
+		SimpleMailMessage sm = prepararNovaSenhaEmail(cliente, newSenha);
+		enviarEmail(sm);
+		
+	}
+
+	//Botei como protected pois as classes filhas vão poder sobrepô-las
+	
+	protected SimpleMailMessage prepararNovaSenhaEmail(Cliente cliente, String newSenha) {
+		//Copiei lá do metodo prepararMensagemEmailPedido
+		/*
+		 * Gerar um SimpleMailMessage a partir de um pedido
+		 * vou instanciar mais um simpleMailMessage
+		 * e depois chamar o set para definir alguns atributos básicos
+		 * de uma mensagem de email..
+		 */
+		SimpleMailMessage sm = new SimpleMailMessage();
+		//Confirmação do pedido, para quem vai? Para o cliente.
+		//Abaixo vai ser o destinatário do email.
+		sm.setTo(cliente.getEmail());
+		//Remetentente do email, vai ser o padrão ou seja o que eu 
+		//definir no application.properties, que está na chave default.sender
+		sm.setFrom(sender);
+		//Assunto.
+		sm.setSubject("Solicitação de nova senha");
+		//Data do email, botei o currentMills para garantir 
+		//Que vai ser de acordo com o meu servidor.
+		sm.setSentDate(new Date(System.currentTimeMillis()));
+		//Corpo do Email
+		sm.setText("Nova senha: " + newSenha);
+		return sm;
 	}
 }
