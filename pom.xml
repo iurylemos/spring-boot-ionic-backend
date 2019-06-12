@@ -9,9 +9,12 @@
 		<version>1.5.21.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
+	
 	<groupId>com.iurylemos.cursomc</groupId>
 	<artifactId>cursomc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
 	<name>cursomc</name>
 	<description>Estudo de caso Java para Modelagem Conceitual com UML</description>
 
