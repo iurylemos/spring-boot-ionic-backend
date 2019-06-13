@@ -10,6 +10,7 @@ import java.io.InputStream;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.io.FilenameUtils;
+import org.imgscalr.Scalr;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,5 +77,35 @@ public class ImagemServico {
 		
 	}
 	
+	/*
+	 * Função para recortar a imagem, e deixa-la quadrada.
+	 */
+	
+	public BufferedImage recortarImagem(BufferedImage sourceImg) {
+		//Descobrindo qual o minimo? É altura ou largura?
+		//SE ALTURA FOR MENOR QUE A LARGURA, ENTÃO É ALTURA, SE NÃO É LARGURA!
+		int min = (sourceImg.getHeight() <= sourceImg.getWidth()) ? sourceImg.getHeight() : sourceImg.getWidth();
+		//RECORTANDO A IMAGEM COM O CROP
+		/*
+		 * Agora que eu sei quem é o minimo
+		 * Vou no meio da largura com o /2
+		 * e boto menos a metade do mínimo.
+		 * E assim eu faço com o altura
+		 * Nos dois ultimos parametros eu informo quanto que eu quero recortar
+		 * na altura e na largura, e assim eu coloco o minimo para as duas.
+		 */
+		return Scalr.crop(
+				sourceImg, 
+				(sourceImg.getWidth() /2) - (min/2), 
+				(sourceImg.getHeight() /2) - (min/2),
+				min, min);
+	}
+	
+	//Função para redimensionar uma imagem!
+	public BufferedImage redimensionar(BufferedImage sourceImg, int size) {
+		//Recebe uma imagem e o tamanho que eu quero que seja recortada.
+		//E no Scalr eu boto o máximo de qualidade.
+		return Scalr.resize(sourceImg, Scalr.Method.ULTRA_QUALITY, size);
+	}
 
 }

@@ -57,6 +57,9 @@ public class ClienteServico {
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
 	
+	@Value("${img.profile.size}")
+	private Integer tamanho;
+	
 	
 	public Cliente find(Integer id) {
 		//Usuario logado está dentro do metodo authenticated.
@@ -234,6 +237,13 @@ public class ClienteServico {
 		 * Vou ter que injetar uma depedência do ImagemServico */
 		
 		BufferedImage jpgImage = imagemServico.getJpgImagemParaArquivo(multipartFile);
+		//Recortando a imagem para quadrada antes de enviar pro Sw3
+		jpgImage = imagemServico.recortarImagem(jpgImage);
+		/*Redimensionar a imagem para que ela fique do tamanho que eu definir
+		 * Lá no application.properties que foi 200. 
+		 * Vou pegar a chave e criar aqui a instancia
+		 * com o nome do atributo de tamanho */
+		jpgImage = imagemServico.redimensionar(jpgImage, tamanho);
 		
 		//Montar o nome do arquivo personalizado a apartir do cliente que está logado.
 		//Concatenando com o código do cliente com o JPG
