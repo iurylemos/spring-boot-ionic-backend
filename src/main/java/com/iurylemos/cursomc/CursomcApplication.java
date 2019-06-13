@@ -1,12 +1,22 @@
 package com.iurylemos.cursomc;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.iurylemos.cursomc.servicos.S3Servico;
+
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner {
+	
+	/*
+	 * Testar o básico do S3 da Amazon aqui só para executar.
+	 */
+	
+	@Autowired
+	private S3Servico s3Servico;
 
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -20,7 +30,8 @@ public class CursomcApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-
+		s3Servico.uploadFile("C:\\temp\\fotos\\restaurante.jpg");
+		
 	}
 
 }
