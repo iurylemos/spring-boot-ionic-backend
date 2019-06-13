@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.iurylemos.cursomc.dominio.Cliente;
@@ -169,5 +170,30 @@ public class ClienteRecurso {
 		Page<ClienteDTO> listDto = list.map(obj -> new ClienteDTO(obj));
 		
 		return ResponseEntity.ok().body(listDto);
+	}
+	
+	/*
+	 * ENDPOINT PARA ENVIAR A FOTO DE PERFIL DO CLIENTE LÁ PARA AMAZONS3
+	 * Botei o nome de uploadProfilePicture
+	 * E a anotação coloquei o @RequestParam
+	 * Para ele reconhecer que chegou esse parametro lá da minha requisição HTTP
+	 */
+
+	@RequestMapping(value="/picture", method=RequestMethod.POST)
+	public ResponseEntity<Void> uploadProfilePicture(@RequestParam(name="file") MultipartFile file) {
+
+		/* chamada para uploadProfilePicture do ClienteServico. */
+		
+		URI uri = servico.uploadProfilePicture(file);
+		/*
+		 * O retorno
+		 * É similar ao ENDPOINT de inserção de um recurso em um crud
+		 * Só que na verdade estou fazendo o upload de uma imagem
+		 * e vou ter como resposta a URI dessa imagem
+		 * e dessa forma eu vou retornar a resposta HTTP 201
+		 * que é o creted(uri), e que a uri vai ser essa que vai chegar
+		 * no cabeçalho com o build().
+		 */
+		return ResponseEntity.created(uri).build();
 	}
 }

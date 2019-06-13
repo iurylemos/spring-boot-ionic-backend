@@ -79,9 +79,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * VETOR PARA POST
 	 * de usuários não logados, ou seja para aqueles que desejam se cadastrar..
 	 * ENDPOINTS QUE PODEM SER ACESSADOS MESMO SEM ESTAR LOGADO
+	 * esse /** é tipo dizer que tudo que tiver depois de cliente está liberado
+	 * quando eu retiro, eu falo que ele só ter acesso ao /clientes
+	 * 
 	 */
 	private static final String[] PUBLIC_MATCHERS_POST = {
-			"/clientes/**",
+			"/clientes",
+			"/clientes/picture",
 			"/auth/forgot/**"
 	};
 	

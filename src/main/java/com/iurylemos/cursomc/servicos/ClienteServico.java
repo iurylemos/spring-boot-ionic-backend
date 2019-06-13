@@ -1,5 +1,6 @@
 package com.iurylemos.cursomc.servicos;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.iurylemos.cursomc.dominio.Cidade;
 import com.iurylemos.cursomc.dominio.Cliente;
@@ -39,6 +41,9 @@ public class ClienteServico {
 	
 	@Autowired
 	private BCryptPasswordEncoder pe;
+	
+	@Autowired
+	private S3Servico s3servico;
 	
 	
 	public Cliente find(Integer id) {
@@ -196,5 +201,14 @@ public class ClienteServico {
 	 */
 	//Passo 2 e 3 eu conseguir indetificar que estava faltando isso no meu sistema.
 	
+	/**
+	 * METODO ABAIXO VAI SER CRIADO
+	 * ESPECIFICO PARA FAZER O UPLOAD DO PERFIL DO CLIENTE
+	 * COM A AMAZONS3
+	 */
 	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		//Metodo vai simplesmente repassar a chamada lá pro meu S3Servico.
+		return s3servico.uploadFile(multipartFile);
+	}
 }
