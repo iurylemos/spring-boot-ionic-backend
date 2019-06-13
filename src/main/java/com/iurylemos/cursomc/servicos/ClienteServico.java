@@ -208,7 +208,28 @@ public class ClienteServico {
 	 */
 	
 	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		//Verificar se o usuário está logado.
+		UserSS user = UsuarioServico.authenticated();
+		//Testar se o usuário for igual a nulo, significa que não está logado
+		if(user == null) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+		//Criar uma URI recebendo a chamada do uploadFile
+		URI uri = s3servico.uploadFile(multipartFile);
+		//Salvando a URI no cliente que está logado
+		/*
+		 * Pego o id do usuário logado pelo repositorio que tem acesso ao BD
+		 * E istancio um cliente pego o cliente que é a entidade monitorada do BD
+		 * e seto dentro dela a URI que contem a imagem.
+		 */
+		Cliente cli = repo.findOne(user.getId());
+		cli.setImagemURL(uri.toString());
+		repo.save(cli);
+		
 		//Metodo vai simplesmente repassar a chamada lá pro meu S3Servico.
-		return s3servico.uploadFile(multipartFile);
+		return uri;
 	}
+	
+	
+	
 }

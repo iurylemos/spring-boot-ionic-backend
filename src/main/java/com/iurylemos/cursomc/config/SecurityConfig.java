@@ -81,11 +81,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	 * ENDPOINTS QUE PODEM SER ACESSADOS MESMO SEM ESTAR LOGADO
 	 * esse /** é tipo dizer que tudo que tiver depois de cliente está liberado
 	 * quando eu retiro, eu falo que ele só ter acesso ao /clientes
+	 * retirei o /clientes/picture
+	 * por que agora vou exigir que o usuário esteja logado (autenticado) 
+	 * para adicionar sua foto, ou atualiza-la.
 	 * 
 	 */
 	private static final String[] PUBLIC_MATCHERS_POST = {
 			"/clientes",
-			"/clientes/picture",
 			"/auth/forgot/**"
 	};
 	

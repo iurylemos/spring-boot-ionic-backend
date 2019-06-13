@@ -125,6 +125,11 @@ public class Cliente implements Serializable {
 	@OneToMany(mappedBy="cliente")
 	private List<Pedido> pedidos = new ArrayList<>();
 	
+	/*
+	 * Campo adicional para imagem url
+	 */
+	private String imagemURL;
+	
 	
 	public Cliente() {
 		//Todo usuário do meu sistema vai ter o perfil de CLIENTE
@@ -269,6 +274,14 @@ public class Cliente implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getImagemURL() {
+		return imagemURL;
+	}
+
+	public void setImagemURL(String imagemURL) {
+		this.imagemURL = imagemURL;
 	}
 	
 	
