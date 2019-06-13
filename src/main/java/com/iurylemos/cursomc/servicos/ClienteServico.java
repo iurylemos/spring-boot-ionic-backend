@@ -1,9 +1,11 @@
 package com.iurylemos.cursomc.servicos;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +46,16 @@ public class ClienteServico {
 	
 	@Autowired
 	private S3Servico s3servico;
+	
+	@Autowired
+	private ImagemServico imagemServico;
+	
+	//Montar o nome do arquivo personalizado a apartir do cliente que está logado.
+	//Vou pegar o prefixo que definir no application.properties
+	//que é o CP.
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	
 	public Cliente find(Integer id) {
@@ -214,20 +226,27 @@ public class ClienteServico {
 		if(user == null) {
 			throw new AuthorizationException("Acesso negado!");
 		}
-		//Criar uma URI recebendo a chamada do uploadFile
-		URI uri = s3servico.uploadFile(multipartFile);
-		//Salvando a URI no cliente que está logado
-		/*
-		 * Pego o id do usuário logado pelo repositorio que tem acesso ao BD
-		 * E istancio um cliente pego o cliente que é a entidade monitorada do BD
-		 * e seto dentro dela a URI que contem a imagem.
-		 */
-		Cliente cli = repo.findOne(user.getId());
-		cli.setImagemURL(uri.toString());
-		repo.save(cli);
+		/*Instanciar um BufferedImage recebendo a imagemJpg 
+		 * Extraida a apartir do MultipartFile
+		 * que vem em muitos formatos
+		 * Para isso vou chamar a função que está no ImagemServico
+		 * E então no ClienteServico
+		 * Vou ter que injetar uma depedência do ImagemServico */
 		
-		//Metodo vai simplesmente repassar a chamada lá pro meu S3Servico.
-		return uri;
+		BufferedImage jpgImage = imagemServico.getJpgImagemParaArquivo(multipartFile);
+		
+		//Montar o nome do arquivo personalizado a apartir do cliente que está logado.
+		//Concatenando com o código do cliente com o JPG
+		//Esse arquivo vai ser o enviado para o s3.
+		String fileNome = prefix + user.getId() + ".jpg";
+		
+		/*
+		 * retornar o uploadfile
+		 * 1º parametro: INPUTSTREAM vai ser quem eu obtiver a apartir dessa imagem
+		 * Vou chamar o metodo que fiz por ultimo para conversão do INPUT para BUFFEREDIMAGE
+		 */
+		
+		return s3servico.uploadFile(imagemServico.getInputStream(jpgImage, "jpg"), fileNome, "image");
 	}
 	
 	
