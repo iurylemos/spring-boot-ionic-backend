@@ -51,6 +51,9 @@ public class AuthenticationRecurso {
 		UserSS user = UsuarioServico.authenticated();
 		String token = jwtUtil.generateToken(user.getUsername());
 		response.addHeader("Authorization", "Bearer " + token);
+		//Liberar a leitura do cabeçalho Authorization com o Cors
+		//Mudei aqui e no JWTAuthentication
+		response.addHeader("access-control-expose-headers", "Authorization");
 		return ResponseEntity.noContent().build();
 	}
 	

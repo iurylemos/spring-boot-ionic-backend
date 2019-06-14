@@ -83,7 +83,44 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		String username = ((UserSS) auth.getPrincipal()).getUsername();
 		String token = jwtUtil.generateToken(username);
+		//Incluimos o token e o cabeçalho Authorization
+		//Isso a nossa aplicação não consegue acessar
+		//Pois é um cabeçalho personalizado e tem que ser ajustado no CORS
+		
+		/*
+		 * Exemplo se vem uma requisição de outra origem, ou seja
+		 * de outro endereço, eu tenho que dizer o que vou disponibilizar
+		 * para esse cara que está fazendo a requisição?
+		 * O mecanismo que decide isso é o CORS
+		 * Ele por padrão: 
+		 *  1º ELE PERGUNTA SE É GET E SE TEM CABEÇALHO CUSTOMIZADO
+		 * Ele pergunta se a requisição que está vindo de outra origem
+		 * é uma requisição GET?
+		 * Se for GET tem outra pergunta, tem cabeçalho customizado nessa Requisição?
+		 * Se tiver ai vou verificar no servidor enviando uma requisição OPTIONS
+		 * E esse OPTIONS vai verificar se é permitido eu acessar aquela resposta
+		 * se a resposta falar que está tudo bem, ai sim vou retornar um recurso
+		 * Se não retorno um ERROR DE CORS
+		 * 
+		 *  2º SE A REQUISIÇÃO É POST, ELE VERIFICA SE O CABEÇALHO É CUSTOMIZADO
+		 *  Ele verifica qual o content-type, se SIM tudo bem, se NÃO ele
+		 *  vai lá executar o OPTIONES TAMBÉM, para verificar se é permitido
+		 *  acessar aquele recurso.
+		 *  
+		 *  3º SE VC TIVER DANDO UM PUT OU DELETE vai está alterando os recursos
+		 *  ELE VAI DIRETO PARA O OPTIONS verificar.
+		 *  é muito mais grave que um GET e um POST.
+		 *  
+		 *  ORDEM DE GRAVIDADE E IMPORTÂNCIA DAR PARA AS REQUISIÇÕES
+		 */
+		
 		res.addHeader("Authorization", "Bearer " +token);
+		//Liberar a leitura do cabeçalho Authorization com o Cors
+		//Vou modificar aqui e no AuthenticationRecurso
+		res.addHeader("access-control-expose-headers", "Authorization");
+		
 	}
+	
+	
 
 }
