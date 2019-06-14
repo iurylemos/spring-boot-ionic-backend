@@ -180,13 +180,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		
 		. Configuração inicial do Spring Security
 
-	 * 
+	 * Acrescetando o PUT e DELETE no CORS tbm
 	 */
 	
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuracao = new CorsConfiguration().applyPermitDefaultValues();
+		//Aqui abaixo eu coloco quais os tipos para o CORS acessar, inclusive o OPTIONS
+		//Que é metodo que os frontEND utilizam para testar a primeira requisição.
+		configuracao.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
 		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+		source.registerCorsConfiguration("/**", configuracao);
 		return source;
 	}
 	
