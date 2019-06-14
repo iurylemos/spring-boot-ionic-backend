@@ -18,6 +18,7 @@ public interface CidadeRepositorio extends JpaRepository<Cidade, Integer> {
 	//Fazer a query para implementar a consulta
 	//SELECIONE obj.estado.id é igual ao estado que vou passar no parametro
 	//Para dizer que o estado_id do parametro é o mesmo que estadoId
+	//Lembrando que na query é uma lista então tem que colocar o :
 	//Tive que colocar o @Param.
 	@Transactional(readOnly=true)
 	@Query("SELECT obj FROM Cidade obj WHERE obj.estado.id = :estadoId ORDER BY obj.nome")

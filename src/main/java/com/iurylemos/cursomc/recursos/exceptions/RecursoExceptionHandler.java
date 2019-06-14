@@ -40,7 +40,7 @@ public class RecursoExceptionHandler {
 		 */
 		//Isso é padrão do controllerAdvace
 		
-		ErroPadrao erro = new ErroPadrao(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.NOT_FOUND.value(), "Not Found", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
 	}
 	
@@ -58,7 +58,7 @@ public class RecursoExceptionHandler {
 		
 		//Se estourar a excessão vai aparecer o meu StandardError.
 		
-		ErroPadrao erro = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 	
@@ -69,7 +69,7 @@ public class RecursoExceptionHandler {
 	
 		//Vou querer gerar uma lista de erros com as mensagens de erro.
 		
-		ValidacaoError erro = new ValidacaoError(HttpStatus.BAD_REQUEST.value(), "Erro de validação", System.currentTimeMillis());
+		ValidacaoError erro = new ValidacaoError(System.currentTimeMillis(), HttpStatus.UNPROCESSABLE_ENTITY.value(), "Erro de arquivo" , e.getMessage(), request.getRequestURI());
 		//Antes de retornar, eu tenho que pecorrer a lista de erros que já tem na excessão
 		//Padrão do FRAMEWORK pegando só o nome do campo e a mensagem corespondente ao erro.
 		
@@ -87,7 +87,7 @@ public class RecursoExceptionHandler {
 		}
 		
 		
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erro);
 	}
 	
 	/*
@@ -104,14 +104,14 @@ public class RecursoExceptionHandler {
 	public ResponseEntity<ErroPadrao> authorization(AuthorizationException e, HttpServletRequest request) {
 	
 		//Como é o erro do acesso negado ai no lugar do NOT_FOUND, boto o FORBIDDEN
-		ErroPadrao erro = new ErroPadrao(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.FORBIDDEN.value(), "Forbidden", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(erro);
 	}
 	
 	@ExceptionHandler(FileException.class)
 	public ResponseEntity<ErroPadrao> file(FileException e, HttpServletRequest request) {
 	
-		ErroPadrao erro = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 	
@@ -124,7 +124,7 @@ public class RecursoExceptionHandler {
 		 */
 		//Pega o código HTTP da Amazon e transforma para HttpStatus
 		HttpStatus code = HttpStatus.valueOf(e.getErrorCode());
-		ErroPadrao erro = new ErroPadrao(code.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), code.value(), "Not Found", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(code).body(erro);
 	}
 	
@@ -136,7 +136,7 @@ public class RecursoExceptionHandler {
 	@ExceptionHandler(AmazonClientException.class)
 	public ResponseEntity<ErroPadrao> amazonClient(AmazonClientException e, HttpServletRequest request) {
 	
-		ErroPadrao erro = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 	
@@ -144,7 +144,7 @@ public class RecursoExceptionHandler {
 	@ExceptionHandler(AmazonS3Exception.class)
 	public ResponseEntity<ErroPadrao> amazonS3(AmazonS3Exception e, HttpServletRequest request) {
 	
-		ErroPadrao erro = new ErroPadrao(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
+		ErroPadrao erro = new ErroPadrao(System.currentTimeMillis(), HttpStatus.BAD_REQUEST.value(), "Bad Request", e.getMessage(), request.getRequestURI());
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
 	}
 	

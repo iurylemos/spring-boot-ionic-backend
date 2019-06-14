@@ -8,20 +8,21 @@ public class ValidacaoError extends ErroPadrao {
 	//Classe de erro herdando da classe ErroPadrao
 	//Só que agora acrescentando a lista do FieldMessage.
 	//Vou modificar lá no RecursoE..Handler
+	//Erro específico para validação de formulário.
 	
+	//Lista de erros que tem fieldName e mensagem.
+	//Ele tem tudo que o ErroPadrao tbm e uma lista de erros
 	private List<FieldMessage> erros = new ArrayList<>();
+
+	/*
+	 * Fica até errado se eu colocar essa lista no contrutor
+	 * Por que já instanciei ela vázio aqui acima.
+	 */
 	
-	
-	public ValidacaoError(Integer status, String msg, Long timeStamp) {
-		super(status, msg, timeStamp);
-		// TODO Auto-generated constructor stub
+	public ValidacaoError(Long timestamp, Integer status, String error, String message, String path) {
+		super(timestamp, status, error, message, path);
 	}
 
-	//Tirando o getList e colocando getErrors
-	//por que no java o que importa é o que está no GET
-	//No JSON quando for executado vai aparecer Errors:
-	//E não list: ...
-	
 	public List<FieldMessage> getErrors() {
 		return erros;
 	}
@@ -31,6 +32,7 @@ public class ValidacaoError extends ErroPadrao {
 	public void addError(String campoNome, String message) {
 		erros.add(new FieldMessage(campoNome, message));
 	}
+	
 	
 	
 	
