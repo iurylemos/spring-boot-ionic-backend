@@ -1,7 +1,12 @@
 package com.iurylemos.cursomc.repositorios;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.iurylemos.cursomc.dominio.Cidade;
 
@@ -9,15 +14,14 @@ import com.iurylemos.cursomc.dominio.Cidade;
 public interface CidadeRepositorio extends JpaRepository<Cidade, Integer> {
 	//interface capaz de acessar o BD
 	//Ela herda o JpaRepository
-	/*
-	 * Que é um tipo especial do SPRING
-	 * capaz de acessar os dados com base em um tipo que você 
-	 * passar.
-	 * 
-	 * e no 2º parametro qual o tipo do atributo identificador do OBJ
-	 * no caso como o id é integer.
-	 * 
-	 */
+	
+	//Fazer a query para implementar a consulta
+	//SELECIONE obj.estado.id é igual ao estado que vou passar no parametro
+	//Para dizer que o estado_id do parametro é o mesmo que estadoId
+	//Tive que colocar o @Param.
+	@Transactional(readOnly=true)
+	@Query("SELECT obj FROM Cidade obj WHERE obj.estado.id = :estadoId ORDER BY obj.nome")
+	public List<Cidade> findCidades(@Param("estadoId")Integer estado_id);
 	
 	
 
