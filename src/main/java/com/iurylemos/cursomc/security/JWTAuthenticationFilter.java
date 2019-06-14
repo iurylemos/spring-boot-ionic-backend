@@ -115,6 +115,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		 */
 		
 		res.addHeader("Authorization", "Bearer " +token);
+		//Já que estamos enviando um cabeçalho personalinalizado
+		//Precisamos:
 		//Liberar a leitura do cabeçalho Authorization com o Cors
 		//Vou modificar aqui e no AuthenticationRecurso
 		res.addHeader("access-control-expose-headers", "Authorization");

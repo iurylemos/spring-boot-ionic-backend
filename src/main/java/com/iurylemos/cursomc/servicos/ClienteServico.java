@@ -259,6 +259,26 @@ public class ClienteServico {
 		return s3servico.uploadFile(imagemServico.getInputStream(jpgImage, "jpg"), fileNome, "image");
 	}
 	
+	/*
+	 * Buscar um cliente por EMAIL.
+	 * E vou fazer um ENDPOINT lá no ClienteRecurso
+	 */
 	
+	public Cliente findByEmail(String email) {
+		//Pegando o usuário logado
+		UserSS user = UsuarioServico.authenticated();
+		//Se o usuário logado for nulo ou não for ADMIN e o email não for o mesmo do que está logado
+		//É por que deu problema de autenticação.
+		if(user == null || !user.hasRole(Perfil.ADMIN) && !email.equals(user.getUsername())) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		//Buscar o cliente pelo email que está no banco
+		Cliente obj = repo.findByEmail(email);
+		if(obj == null) {
+			throw new ObjetoNotFountException("Objeto não encontrado! Id:" + user.getId() + ", Tipo: " + Cliente.class.getName()); 
+		}
+		return obj;
+	}
 	
 }

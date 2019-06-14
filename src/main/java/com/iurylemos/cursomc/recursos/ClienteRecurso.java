@@ -68,6 +68,20 @@ public class ClienteRecurso {
 		return ResponseEntity.ok().body(obj);
 	}
 	
+	/*
+	 * ENDPOINT de buscar por EMAIL
+	 *  /clientes/email
+	 *  Ele vai receber um valor que é o email como parametro no GET
+	 *  Ele recebe o email e chama o servico e retorna o objeto na requisição.
+	 */
+	@RequestMapping(value="/email", method=RequestMethod.GET)
+	public ResponseEntity<Cliente> findByEmail(@RequestParam(value="value") String email) {
+		
+		Cliente obj = servico.findByEmail(email);
+		return ResponseEntity.ok().body(obj);
+	}
+	
+	
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	@RequestMapping(method=RequestMethod.POST)
 	public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
